@@ -4,13 +4,13 @@
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | 1.3.3 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~>2.8 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~>4 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | ~>2.8 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | ~>4 |
 
 ## Modules
 
@@ -50,7 +50,6 @@ No modules.
 |------|-------------|
 | <a name="output_default_sg_id"></a> [default\_sg\_id](#output\_default\_sg\_id) | n/a |
 | <a name="output_private_subnets_id"></a> [private\_subnets\_id](#output\_private\_subnets\_id) | n/a |
-| <a name="output_public_route_table"></a> [public\_route\_table](#output\_public\_route\_table) | n/a |
 | <a name="output_public_subnets_id"></a> [public\_subnets\_id](#output\_public\_subnets\_id) | n/a |
 | <a name="output_vpc_id"></a> [vpc\_id](#output\_vpc\_id) | n/a |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

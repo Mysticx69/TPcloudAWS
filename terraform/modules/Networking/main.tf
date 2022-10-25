@@ -1,4 +1,16 @@
+terraform {
+
+  required_version = "1.3.3"
+
+  required_providers {
+    aws = "~>4"
+  }
+
+}
+
+######
 # VPC
+######
 resource "aws_vpc" "vpc" {
   cidr_block           = var.vpc_cidr
   enable_dns_hostnames = true
@@ -9,8 +21,9 @@ resource "aws_vpc" "vpc" {
   }
 }
 
-# Subnets
-# Internet Gateway for Public Subnet
+##################
+# Internet Gateway
+##################
 resource "aws_internet_gateway" "ig" {
   vpc_id = aws_vpc.vpc.id
   tags = {
@@ -19,13 +32,19 @@ resource "aws_internet_gateway" "ig" {
   }
 }
 
-# Elastic-IP (eip) for NAT gateway
+
+#####################
+# EIP For Nat Gateway
+#####################
 resource "aws_eip" "nat_eip" {
   vpc        = true
   depends_on = [aws_internet_gateway.ig] # Wait for IGW creation
 }
 
-# NAT
+
+#############
+# NAT Gateway
+#############
 resource "aws_nat_gateway" "nat" {
   allocation_id = aws_eip.nat_eip.id # Bind EIP
   subnet_id     = element(aws_subnet.public_subnet.*.id, 0)
@@ -35,7 +54,10 @@ resource "aws_nat_gateway" "nat" {
   }
 }
 
+
+##################
 # Public subnet(s)
+##################
 resource "aws_subnet" "public_subnet" {
   vpc_id                  = aws_vpc.vpc.id
   count                   = length(var.public_subnets_cidr)
@@ -47,8 +69,9 @@ resource "aws_subnet" "public_subnet" {
     Name = "${var.environment}-${element(var.availability_zones, count.index)}-public-subnet"
   }
 }
-
-# Private Subnet(s)
+###################
+# Private subnet(s)
+###################
 resource "aws_subnet" "private_subnet" {
   vpc_id                  = aws_vpc.vpc.id
   count                   = length(var.private_subnets_cidr)
@@ -61,7 +84,9 @@ resource "aws_subnet" "private_subnet" {
   }
 }
 
-# Routing tables to route traffic for Private Subnet
+###################################
+# Routing Table For Private Subnets
+###################################
 resource "aws_route_table" "private_RT" {
   vpc_id = aws_vpc.vpc.id
 
@@ -70,7 +95,9 @@ resource "aws_route_table" "private_RT" {
   }
 }
 
-# Routing tables to route traffic for Public Subnet
+###################################
+# Routing Table For Public Subnets
+###################################
 resource "aws_route_table" "public_RT" {
   vpc_id = aws_vpc.vpc.id
 
@@ -78,22 +105,26 @@ resource "aws_route_table" "public_RT" {
     Name = "${var.environment}-public-route-table"
   }
 }
-
-# Route for Internet Gateway
+############################
+# Route For Internet Gateway
+############################
 resource "aws_route" "public_internet_gateway" {
-  route_table_id         = aws_route_table.public.id
+  route_table_id         = aws_route_table.public_RT.id
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = aws_internet_gateway.ig.id
 }
-
-# Route for NAT Gateway
+#######################
+# Route For NAT Gateway
+#######################
 resource "aws_route" "private_nat_gateway" {
-  route_table_id         = aws_route_table.private.id
+  route_table_id         = aws_route_table.private_RT.id
   destination_cidr_block = "0.0.0.0/0"
   nat_gateway_id         = aws_nat_gateway.nat.id
 }
 
-# Route table associations for both Public & Private Subnets
+##########################
+# Route Table Associations
+##########################
 resource "aws_route_table_association" "public" {
   count          = length(var.public_subnets_cidr)
   subnet_id      = element(aws_subnet.public_subnet.*.id, count.index)
@@ -106,7 +137,9 @@ resource "aws_route_table_association" "private" {
   route_table_id = aws_route_table.private_RT.id
 }
 
-# Default Security Group of VPC
+################################
+# Default Security Group For VPC
+################################
 resource "aws_security_group" "default" {
   name        = "${var.environment}-default-sg"
   description = "Default SG to allow internal VPC traffic"
