@@ -24,3 +24,12 @@ output "default_sg_id" {
   value = module.Networking.default_sg_id
 
 }
+
+##################
+#Webservers Module
+##################
+output "elb_dns_name" {
+
+  value = module.WebServers.Dns_Elb
+
+}

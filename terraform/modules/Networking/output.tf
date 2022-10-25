@@ -12,5 +12,5 @@ output "private_subnets_id" {
 }
 
 output "default_sg_id" {
-  value = aws_security_group.default.id
+  value = aws_default_security_group.default.id
 }
