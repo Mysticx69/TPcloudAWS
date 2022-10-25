@@ -19,6 +19,7 @@
   ANSSI: https://www.ssi.gouv.fr/administration/bonnes-pratiques/
   CIS: https://downloads.cisecurity.org/**
  - Tag policies (AWS organazitations) => Unfortunately, no rights on this service with labs account
+ - Infra AWS draw.io
 
 ## Architecture
 
