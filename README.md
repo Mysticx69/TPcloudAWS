@@ -24,4 +24,5 @@
 ![Architecture](https://user-images.githubusercontent.com/84475677/197707646-c85bcebc-6ee1-4538-8038-2d6735579699.png)
 
 ## Flow matrix 
+![flow matrix](https://user-images.githubusercontent.com/84475677/197709780-8ed712af-26bf-408f-8df9-68c6cd836cee.png)
 
