@@ -25,6 +25,11 @@ output "default_sg_id" {
 
 }
 
+output "webser_sg_id" {
+
+  value = aws_security_group.webserver_sg.id
+}
+
 ##################
 #Webservers Module
 ##################

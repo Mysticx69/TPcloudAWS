@@ -1,8 +1,9 @@
 resource "aws_elb" "ELB_Webservers" {
   #checkov:skip=CKV_AWS_127: "Ensure that Elastic Load Balancer(s) uses SSL certificates provided by AWS Certificate Manager"
-  name               = "ELB-Webservers"
-  availability_zones = var.availability_zones
-  security_groups    = var.security_groups_elb
+  name            = "ELB-Webservers"
+  security_groups = var.security_groups_elb
+  subnets         = var.subnets_elb
+
   access_logs {
     bucket = aws_s3_bucket.elb_logs.bucket
 

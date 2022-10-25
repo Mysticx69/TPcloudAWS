@@ -4,6 +4,7 @@ resource "aws_autoscaling_policy" "asg_policy_webservers" {
   policy_type            = "TargetTrackingScaling"
   autoscaling_group_name = aws_autoscaling_group.ASG_webservers.name
 
+
   target_tracking_configuration {
 
     predefined_metric_specification {

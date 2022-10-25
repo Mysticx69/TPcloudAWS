@@ -35,11 +35,13 @@ No modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_ami"></a> [ami](#input\_ami) | AMI to use for the instance | `string` | n/a | yes |
-| <a name="input_availability_zones"></a> [availability\_zones](#input\_availability\_zones) | Choose AZ | `list(string)` | <pre>[<br>  "us-east-1a",<br>  "us-east-1b",<br>  "us-east-1c"<br>]</pre> | no |
+| <a name="input_associate_public_ip_address"></a> [associate\_public\_ip\_address](#input\_associate\_public\_ip\_address) | Associate a public ip address with an instance in a VPC. | `bool` | n/a | yes |
 | <a name="input_instance_type"></a> [instance\_type](#input\_instance\_type) | Instance type to use for the instance. | `string` | n/a | yes |
 | <a name="input_key_name"></a> [key\_name](#input\_key\_name) | Key name of the Key Pair to use for the instance | `string` | n/a | yes |
 | <a name="input_security_groups"></a> [security\_groups](#input\_security\_groups) | List of security group IDS to associate with. | `set(string)` | n/a | yes |
 | <a name="input_security_groups_elb"></a> [security\_groups\_elb](#input\_security\_groups\_elb) | List of security group IDS to associate with. | `set(string)` | n/a | yes |
+| <a name="input_subnets_elb"></a> [subnets\_elb](#input\_subnets\_elb) | A list of subnet IDs to attach to the ELB. | `list(string)` | n/a | yes |
+| <a name="input_vpc_zone_identifier"></a> [vpc\_zone\_identifier](#input\_vpc\_zone\_identifier) | List of subnet IDs to launch resources in. Subnets automatically determine which availability zones the group will reside | `list(string)` | n/a | yes |
 
 ## Outputs
 

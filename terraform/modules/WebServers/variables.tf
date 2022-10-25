@@ -1,12 +1,10 @@
 
-variable "availability_zones" {
+variable "associate_public_ip_address" {
 
-  description = "Choose AZ"
-  type        = list(string)
-  default     = ["us-east-1a", "us-east-1b", "us-east-1c"]
+  type        = bool
+  description = "Associate a public ip address with an instance in a VPC."
+
 }
-
-
 variable "ami" {
 
   type        = string
@@ -39,5 +37,19 @@ variable "security_groups_elb" {
 
   type        = set(string)
   description = "List of security group IDS to associate with."
+
+}
+
+variable "subnets_elb" {
+
+  type        = list(string)
+  description = "A list of subnet IDs to attach to the ELB."
+
+}
+
+variable "vpc_zone_identifier" {
+
+  type        = list(string)
+  description = " List of subnet IDs to launch resources in. Subnets automatically determine which availability zones the group will reside"
 
 }

@@ -70,11 +70,11 @@ resource "aws_subnet" "public_subnet" {
 # Private subnet(s)
 ###################
 resource "aws_subnet" "private_subnet" {
-  vpc_id                  = aws_vpc.vpc.id
-  count                   = length(var.private_subnets_cidr)
-  cidr_block              = element(var.private_subnets_cidr, count.index)
-  availability_zone       = element(var.availability_zones, count.index)
-  map_public_ip_on_launch = false
+  vpc_id            = aws_vpc.vpc.id
+  count             = length(var.private_subnets_cidr)
+  cidr_block        = element(var.private_subnets_cidr, count.index)
+  availability_zone = element(var.availability_zones, count.index)
+
 
   tags = {
     Name = "${var.environment}-${element(var.availability_zones, count.index)}-private-subnet"
@@ -143,6 +143,7 @@ resource "aws_default_security_group" "default" {
   depends_on = [
     aws_vpc.vpc
   ]
+
 
   tags = {
     Name = "${var.environment}-default_SG"
