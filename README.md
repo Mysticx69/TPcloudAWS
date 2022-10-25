@@ -7,7 +7,7 @@
 [ssh best practices (from original author)](https://nvlpubs.nist.gov/nistpubs/ir/2015/nist.ir.7966.pdf)
 
 ## TODO list
-- EC2 encryption volumes
+- EC2 encryption volumes (voir KMS)
 - VPC flowlogs
 - multi-tier infrastructure (Presentation - Application - Data)
 - TAGS
