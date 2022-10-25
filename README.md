@@ -17,3 +17,5 @@ https://aws.amazon.com/architecture/security-identity-compliance/?cards-all.sort
   NIST: https://csrc.nist.gov/publications/sp800
   ANSSI: https://www.ssi.gouv.fr/administration/bonnes-pratiques/
   CIS: https://downloads.cisecurity.org/**
+
+## Architecture
