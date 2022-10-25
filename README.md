@@ -4,6 +4,8 @@
 </br>
 ![links](https://aws.amazon.com/architecture/security-identity-compliance/?cards-all.sort-by=item.additionalFields.sortDate&cards-all.sort-order=desc&awsf.content-type=*all&awsf.methodology=*all)
 
+https://nvlpubs.nist.gov/nistpubs/ir/2015/nist.ir.7966.pdf
+
 ## TODO list
 - EC2 encryption volumes
 - VPC flowlogs
