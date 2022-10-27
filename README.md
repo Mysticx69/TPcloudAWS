@@ -6,11 +6,11 @@
     - [1.3.1. Networking module](#131-networking-module)
     - [1.3.2. WebServers module](#132-webservers-module)
   - [1.4. Modules calls and extra ressources](#14-modules-calls-and-extra-ressources)
-  - [Usage](#usage)
-  - [1.5. Useful links](#15-useful-links)
-  - [1.6. TODO list](#16-todo-list)
-  - [1.7. Architecture](#17-architecture)
-  - [1.8. Flow matrix](#18-flow-matrix)
+  - [1.5. Usage](#15-usage)
+  - [1.6. Useful links](#16-useful-links)
+  - [1.7. TODO list](#17-todo-list)
+  - [1.8. Architecture](#18-architecture)
+  - [1.9. Flow matrix](#19-flow-matrix)
 
 ## 1.1. Introduction
 All this project was made in terraform, I will try to resume my code in the next sections.
@@ -98,7 +98,7 @@ The aim of this module is to deploy a full working entry point for your web serv
 The entrypoint of terraform is in mockinfra-env folder, this is where everything is regrouped. You will find in the main.tf  all resources that are to be deployed.
 There is the modules calls and some extra ressources like the bastion host, backend host, database host and all of security groups needed.
 
-## Usage
+## 1.5. Usage
 1. Clone the repository
 2. Set up terraform, aws cli and pre-commit hooks
 3. Set up your aws credentials (AWS ACCESS KEY and AWS SECRET KEY) for terraform
@@ -150,11 +150,11 @@ There is the modules calls and some extra ressources like the bastion host, back
 
 
 
-## 1.5. Useful links
+## 1.6. Useful links
 </br>
 [links](https://aws.amazon.com/architecture/security-identity-compliance/?cards-all.sort-by=item.additionalFields.sortDate&cards-all.sort-order=desc&awsf.content-type=*all&awsf.methodology=*all)
 [ssh best practices (from original author)](https://nvlpubs.nist.gov/nistpubs/ir/2015/nist.ir.7966.pdf)
-## 1.6. TODO list
+## 1.7. TODO list
 - EC2 encryption volumes (voir KMS)
 - VPC flowlogs
 - multi-tier infrastructure (Presentation - Application - Data)
@@ -171,9 +171,9 @@ There is the modules calls and some extra ressources like the bastion host, back
  - Tag policies (AWS organazitations) => Unfortunately, no rights on this service with labs account
  - Infra AWS draw.io
 
-## 1.7. Architecture
+## 1.8. Architecture
 
 ![Architecture](https://user-images.githubusercontent.com/84475677/197707646-c85bcebc-6ee1-4538-8038-2d6735579699.png)
 
-## 1.8. Flow matrix
+## 1.9. Flow matrix
 ![flow matrix](https://user-images.githubusercontent.com/84475677/197709780-8ed712af-26bf-408f-8df9-68c6cd836cee.png)
