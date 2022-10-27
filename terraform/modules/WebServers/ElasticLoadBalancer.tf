@@ -1,6 +1,6 @@
 resource "aws_elb" "ELB_Webservers" {
   #checkov:skip=CKV_AWS_127: "Ensure that Elastic Load Balancer(s) uses SSL certificates provided by AWS Certificate Manager"
-  name            = "ELB-Webservers"
+  name            = "ELB-mockinfrawebservers"
   security_groups = var.security_groups_elb
   subnets         = var.subnets_elb
 
@@ -15,6 +15,9 @@ resource "aws_elb" "ELB_Webservers" {
     instance_port     = 80
     instance_protocol = "http"
   }
+
+
+
 
   health_check {
     healthy_threshold   = 2

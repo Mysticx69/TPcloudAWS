@@ -13,16 +13,12 @@ module "Networking" {
   public_subnets_cidr  = ["10.150.1.0/24", "10.150.2.0/24"]
   private_subnets_cidr = ["10.150.10.0/24", "10.150.20.0/24"]
   availability_zones   = local.mockinfra_availability_zones
-
-
 }
-
 
 ########################
 # Call WebServers Module
 ########################
 module "WebServers" {
-
   source                      = "../modules/WebServers"
   ami                         = "ami-08c40ec9ead489470"
   instance_type               = "t2.micro"
@@ -34,17 +30,112 @@ module "WebServers" {
   associate_public_ip_address = true
 }
 
-##########################
-# WebServers SecurityGroup
-##########################
+#####################
+# Create Bastion Host
+#####################
+resource "aws_instance" "bastion" {
+  #checkov:skip=CKV_AWS_79: "Ensure Instance Metadata Service Version 1 is not enabled"
+  ami             = "ami-08c40ec9ead489470"
+  instance_type   = "t2.micro"
+  key_name        = "vockey"
+  security_groups = [aws_security_group.bastionhost_sg.id]
+  subnet_id       = element(element(module.Networking.public_subnets_id, 1), 0)
+  ebs_optimized   = true
+  monitoring      = true
+
+  metadata_options {
+    http_endpoint = "enabled"
+    http_tokens   = "optional"
+
+  }
+
+  root_block_device {
+    encrypted = true
+  }
+
+  tags = {
+    Name = "Bastion Host"
+  }
+}
+
+#############################
+# Create EIP for Bastion Host
+#############################
+resource "aws_eip" "bastion_eip" {
+  #checkov:skip=CKV2_AWS_19: "Ensure that all EIP addresses allocated to a VPC are attached to EC2 instances" => EIP is attached but not recognized cause bastion host  not created atm
+  instance = aws_instance.bastion.id
+}
+
+######################
+# Create Backend host
+######################
+resource "aws_instance" "backend_host" {
+  #checkov:skip=CKV_AWS_79: "Ensure Instance Metadata Service Version 1 is not enabled"
+  ami             = "ami-08c40ec9ead489470"
+  instance_type   = "t2.micro"
+  key_name        = "vockey"
+  security_groups = [aws_security_group.backendhost_sg.id]
+  subnet_id       = element(element(module.Networking.private_subnets_id, 1), 0)
+  user_data       = file("/home/user/dev/TPcloudAWS/terraform/modules/WebServers/scripts/backend.sh")
+  ebs_optimized   = true
+  monitoring      = true
+
+  metadata_options {
+    http_endpoint = "enabled"
+    http_tokens   = "optional"
+  }
+
+  root_block_device {
+    encrypted = true
+  }
+
+  tags = {
+    Name = "backend_host"
+  }
+}
+
+######################
+# Create Database host
+######################
+resource "aws_instance" "mysql_db" {
+  #checkov:skip=CKV_AWS_79: "Ensure Instance Metadata Service Version 1 is not enabled"
+  ami             = "ami-08c40ec9ead489470"
+  instance_type   = "t2.micro"
+  key_name        = "vockey"
+  security_groups = [aws_security_group.mysql_sg.id]
+  subnet_id       = element(element(module.Networking.private_subnets_id, 1), 1)
+  user_data       = file("/home/user/dev/TPcloudAWS/terraform/modules/WebServers/scripts/mysql.sh")
+  ebs_optimized   = true
+  monitoring      = true
+
+  metadata_options {
+    http_endpoint = "enabled"
+    http_tokens   = "optional"
+  }
+
+  root_block_device {
+    encrypted = true
+  }
+
+  tags = {
+    Name = "mysql_db"
+  }
+}
+
+
+
+#####################################
+# Elastic Load Balancer SecurityGroup
+#####################################
 resource "aws_security_group" "elb_sg" {
   #checkov:skip=CKV2_AWS_5: "Ensure that Security Groups are attached to another resource" => Actually attached but not recognized cause of the module
-  name        = "webservers_sg"
-  description = "Security group for webservers"
+  name        = "elb_sg"
+  description = "Security group for ELB"
   vpc_id      = module.Networking.vpc_id
 }
-resource "aws_security_group_rule" "allow_http" {
-  description       = "Allow HTTP access from company s internal network"
+
+resource "aws_security_group_rule" "allow_http_elb_sg" {
+  description       = "Allow HTTP access to ELB from company s internal network"
   type              = "ingress"
   from_port         = 80
   to_port           = 80
@@ -52,56 +143,203 @@ resource "aws_security_group_rule" "allow_http" {
   cidr_blocks       = ["176.147.76.8/32"]
   security_group_id = aws_security_group.elb_sg.id
 }
-resource "aws_security_group_rule" "allow_ssh" {
-  description       = "Allow SSH access to DevOps team"
+
+resource "aws_security_group_rule" "allow_https_elb_sg" {
+  description       = "Allow HTTPS access to ELB from company s internal network"
   type              = "ingress"
-  from_port         = 22
-  to_port           = 22
+  from_port         = 443
+  to_port           = 443
   protocol          = "tcp"
   cidr_blocks       = ["176.147.76.8/32"]
   security_group_id = aws_security_group.elb_sg.id
 }
-resource "aws_security_group_rule" "egress_all" {
-  description       = "Egress rules all"
+
+
+resource "aws_security_group_rule" "egress_datacenter_elb" {
+  description       = "Allow Egress to companys Datacenter"
   type              = "egress"
   from_port         = 0
   to_port           = 0
   protocol          = "-1"
-  cidr_blocks       = ["0.0.0.0/0"]
+  cidr_blocks       = ["13.104.208.64/27"]
   security_group_id = aws_security_group.elb_sg.id
 }
 
+resource "aws_security_group_rule" "egress_webservers_elb" {
+  description       = "Allow Egress to webservers"
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = [element(element(module.Networking.public_subnets_cidr, 1), 0), element(element(module.Networking.public_subnets_cidr, 1), 1)]
+  security_group_id = aws_security_group.elb_sg.id
+}
 
+##########################
+# WebServers SecurityGroup
+##########################
 resource "aws_security_group" "webserver_sg" {
   #checkov:skip=CKV2_AWS_5: "Ensure that Security Groups are attached to another resource" => Actually attached but not recognized cause of the module
   name        = "webservers_sg"
   description = "Security group for webservers"
   vpc_id      = module.Networking.vpc_id
 }
-resource "aws_security_group_rule" "allow_http" {
-  description       = "Allow HTTP access from ELB only"
-  type              = "ingress"
-  from_port         = 80
-  to_port           = 80
-  protocol          = "tcp"
-  cidr_blocks       = [aws_security_group.elb_sg.id]
-  security_group_id = aws_security_group.webserver_sg.id
+
+resource "aws_security_group_rule" "allow_igress_elb_webservers" {
+  description              = "Allow igress from ELB"
+  type                     = "ingress"
+  from_port                = 0
+  to_port                  = 0
+  protocol                 = "-1"
+  source_security_group_id = aws_security_group.elb_sg.id
+  security_group_id        = aws_security_group.webserver_sg.id
 }
-resource "aws_security_group_rule" "allow_ssh" {
-  description       = "Allow SSH access from ELB only"
-  type              = "ingress"
-  from_port         = 22
-  to_port           = 22
-  protocol          = "tcp"
-  cidr_blocks       = [aws_security_group.elb_sg.id]
-  security_group_id = aws_security_group.webserver_sg.id
+resource "aws_security_group_rule" "allow_igress_bastion_webservers" {
+  description              = "Allow SSH igress from bastion host"
+  type                     = "ingress"
+  from_port                = 22
+  to_port                  = 22
+  protocol                 = "tcp"
+  source_security_group_id = aws_security_group.bastionhost_sg.id
+  security_group_id        = aws_security_group.webserver_sg.id
 }
-resource "aws_security_group_rule" "egress_all" {
-  description       = "Egress rules all"
+
+
+resource "aws_security_group_rule" "egress_todatacenter_webservers" {
+  description       = "Egress rule to companys datacenter"
   type              = "egress"
   from_port         = 0
   to_port           = 0
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = aws_security_group.webserver_sg.id
+
+}
+
+############################
+# Bastion Host SecurityGroup
+############################
+resource "aws_security_group" "bastionhost_sg" {
+  name        = "bastionhost_sg"
+  description = "Security Group For Bastion Host"
+  vpc_id      = module.Networking.vpc_id
+}
+
+resource "aws_security_group_rule" "allow_ssh_devops_bastionhost" {
+
+  description       = "Allow SSH to bastion host from DevOps Team"
+  type              = "ingress"
+  from_port         = 22
+  to_port           = 22
+  protocol          = "tcp"
+  cidr_blocks       = ["176.147.76.8/32"]
+  security_group_id = aws_security_group.bastionhost_sg.id
+
+}
+
+resource "aws_security_group_rule" "egress_toservers_bastionhost" {
+  description       = "Egress rule to all servers from bastion host"
+  type              = "egress"
+  from_port         = 22
+  to_port           = 22
+  protocol          = "tcp"
+  cidr_blocks       = [module.Networking.vpc_cidr]
+  security_group_id = aws_security_group.bastionhost_sg.id
+}
+
+
+#############################
+# Backend Host SecurityGroup
+#############################
+resource "aws_security_group" "backendhost_sg" {
+  name        = "backendhost_sg"
+  description = "Security Group For Backend Host"
+  vpc_id      = module.Networking.vpc_id
+}
+
+resource "aws_security_group_rule" "allow_ssh_bastion_backendhost" {
+
+  description              = "Allow SSH from bastion host"
+  type                     = "ingress"
+  from_port                = 22
+  to_port                  = 22
+  protocol                 = "tcp"
+  source_security_group_id = aws_security_group.bastionhost_sg.id
+  security_group_id        = aws_security_group.backendhost_sg.id
+
+}
+
+resource "aws_security_group_rule" "allow_ingress_webservers_backendhost" {
+
+  description              = "Allow Ingress to backend host from websevers hosts"
+  type                     = "ingress"
+  from_port                = 8443
+  to_port                  = 8443
+  protocol                 = "tcp"
+  source_security_group_id = aws_security_group.webserver_sg.id
+  security_group_id        = aws_security_group.backendhost_sg.id
+
+}
+
+resource "aws_security_group_rule" "egress_todatabase_backendhost" {
+  description       = "Egress rules all"
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = ["${aws_instance.mysql_db.private_ip}/32"]
+  security_group_id = aws_security_group.backendhost_sg.id
+}
+
+resource "aws_security_group_rule" "egress_todatacenter_backendhost" {
+  description       = "Egress rules to companys datacenter"
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.backendhost_sg.id
+}
+
+#############################
+# Database Host SecurityGroup
+#############################
+resource "aws_security_group" "mysql_sg" {
+  name        = "MySQL_sg"
+  description = "Security Group For MySQL Host"
+  vpc_id      = module.Networking.vpc_id
+}
+
+resource "aws_security_group_rule" "allow_ssh_bastionhost_mysqlhost" {
+
+  description              = "Allow SSH to mySQL host from bastion host"
+  type                     = "ingress"
+  from_port                = 22
+  to_port                  = 22
+  protocol                 = "tcp"
+  source_security_group_id = aws_security_group.bastionhost_sg.id
+  security_group_id        = aws_security_group.mysql_sg.id
+
+}
+
+resource "aws_security_group_rule" "allow_ingress_backendhost_mysqlhost" {
+
+  description              = "Allow Ingress to mySQL host from backend host"
+  type                     = "ingress"
+  from_port                = 3306
+  to_port                  = 3306
+  protocol                 = "tcp"
+  source_security_group_id = aws_security_group.backendhost_sg.id
+  security_group_id        = aws_security_group.mysql_sg.id
+
+}
+
+resource "aws_security_group_rule" "egress_databasehost" {
+  description       = "Egress to companys Datacenter"
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.mysql_sg.id
 }

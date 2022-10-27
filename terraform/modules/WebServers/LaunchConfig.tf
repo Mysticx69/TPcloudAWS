@@ -6,7 +6,7 @@ resource "aws_launch_configuration" "lauch_cfg_asg" {
   instance_type               = var.instance_type
   security_groups             = var.security_groups
   key_name                    = var.key_name
-  user_data                   = file("/home/user/dev/TPcloudAWS/terraform/modules/WebServers/scripts/docker.sh")
+  user_data                   = file("/home/user/dev/TPcloudAWS/terraform/modules/WebServers/scripts/webservers.sh")
   associate_public_ip_address = var.associate_public_ip_address
 
 
