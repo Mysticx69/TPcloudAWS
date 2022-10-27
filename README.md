@@ -13,12 +13,12 @@
   - [1.9. Demonstration](#19-demonstration)
   - [1.10. Useful links](#110-useful-links)
   - [1.11. TODO list](#111-todo-list)
-  - [1.12. Architecture](#112-architecture)
-  - [1.13. Flow matrix](#113-flow-matrix)
+  - [1.12. Flow matrix](#112-flow-matrix)
 
 ## 1.1. Architecture diagrams
 
-![archi](https://user-images.githubusercontent.com/84475677/198379769-7240306f-2a62-40ce-9aa9-a28588e64a39.png)
+![archi](https://user-images.githubusercontent.com/84475677/198381491-039c68d1-2d8a-4434-b6e4-60d53323417b.png)
+
 
 ## 1.2. Introduction
 All this project was made in terraform, I will try to resume my code in the next sections.
@@ -238,9 +238,9 @@ Let's try to connect to our ELB: [http://ELB-mockinfrawebservers-1478364048.us-e
  - Tag policies (AWS organazitations) => Unfortunately, no rights on this service with labs account
  - Infra AWS draw.io
 
-## 1.12. Architecture
+=
 
-![Architecture](https://user-images.githubusercontent.com/84475677/197707646-c85bcebc-6ee1-4538-8038-2d6735579699.png)
 
-## 1.13. Flow matrix
+
+## 1.12. Flow matrix
 ![flow matrix](https://user-images.githubusercontent.com/84475677/197709780-8ed712af-26bf-408f-8df9-68c6cd836cee.png)
