@@ -4,7 +4,7 @@ provider "aws" {
 
   default_tags {
     tags = {
-      Authors     = "Antoine STERNA_Remi GRUFFAT"
+      Authors     = "Antoine STERNA-Remi GRUFFAT"
       Project     = "Awscloudproject-5IRC"
       Environment = "MockInfrastructure"
       DeployedBy  = "Terraform"

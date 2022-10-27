@@ -24,7 +24,19 @@ resource "aws_elb" "ELB_Webservers" {
   }
 }
 
+##########################
+# Fetch Elb Service Account
+###########################
 data "aws_elb_service_account" "main" {}
+
+####################
+# S3 Bucket For Logs
+####################
+resource "aws_s3_bucket" "elb_logs" {
+  #checkov:skip=CKV_AWS_144: "Ensure that S3 bucket has cross-region replication enabled"
+  #checkov:skip=CKV_AWS_18: "Ensure the S3 bucket has access logging enabled"
+  bucket = "elblogsawscloudproject"
+}
 
 resource "aws_s3_bucket_public_access_block" "block_public_policy" {
   bucket                  = aws_s3_bucket.elb_logs.bucket
@@ -50,28 +62,27 @@ resource "aws_s3_bucket_versioning" "versioning" {
   }
 }
 
-resource "aws_s3_bucket" "elb_logs" {
-  #checkov:skip=CKV_AWS_144: "Ensure that S3 bucket has cross-region replication enabled"
-  #checkov:skip=CKV_AWS_18: "Ensure the S3 bucket has access logging enabled"
-  bucket = "elblogsawscloudproject"
-  policy = <<POLICY
-{
-  "Id": "Policy",
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": [
-        "s3:PutObject"
-      ],
-      "Effect": "Allow",
-      "Resource": "arn:aws:s3:::elblogsawscloudproject/AWSLogs/*",
-      "Principal": {
-        "AWS": [
-          "${data.aws_elb_service_account.main.arn}"
-        ]
-      }
-    }
-  ]
+resource "aws_s3_bucket_policy" "S3_policy_for_elb" {
+  bucket = aws_s3_bucket.elb_logs.id
+  policy = data.aws_iam_policy_document.S3_policy_for_elb.json
 }
-POLICY
+
+data "aws_iam_policy_document" "S3_policy_for_elb" {
+  statement {
+    principals {
+      type        = "AWS"
+      identifiers = [data.aws_elb_service_account.main.arn]
+    }
+
+    actions = [
+      "s3:PutObject"
+    ]
+
+    effect = "Allow"
+
+    resources = [
+      aws_s3_bucket.elb_logs.arn,
+      "${aws_s3_bucket.elb_logs.arn}/AWSLogs/*",
+    ]
+  }
 }

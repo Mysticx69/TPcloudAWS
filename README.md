@@ -6,12 +6,14 @@
     - [1.3.1. Networking module](#131-networking-module)
     - [1.3.2. WebServers module](#132-webservers-module)
   - [1.4. Modules calls and extra ressources](#14-modules-calls-and-extra-ressources)
-  - [1.5 Tags policy](#15-tags-policy)
-  - [1.5. Usage](#15-usage)
-  - [1.6. Useful links](#16-useful-links)
-  - [1.7. TODO list](#17-todo-list)
-  - [1.8. Architecture](#18-architecture)
-  - [1.9. Flow matrix](#19-flow-matrix)
+  - [1.5. Terraform outputs](#15-terraform-outputs)
+  - [1.6. Tags policy](#16-tags-policy)
+  - [1.7. Usage](#17-usage)
+  - [1.8. Demonstration](#18-demonstration)
+  - [1.9. Useful links](#19-useful-links)
+  - [1.10. TODO list](#110-todo-list)
+  - [1.11. Architecture](#111-architecture)
+  - [1.12. Flow matrix](#112-flow-matrix)
 
 ## 1.1. Introduction
 All this project was made in terraform, I will try to resume my code in the next sections.
@@ -99,12 +101,47 @@ The aim of this module is to deploy a full working entry point for your web serv
 The entrypoint of terraform is in mockinfra-env folder, this is where everything is regrouped. You will find in the main.tf  all resources that are to be deployed.
 There is the modules calls and some extra ressources like the bastion host, backend host, database host, all of security groups needed, KMS keys, etc...
 
-## 1.5 Tags policy
+## 1.5. Terraform outputs
+I writted some usefull terraform outputs (fetched after resources creation) :
+
+```bash
+default_sg_id = "sg-06de06d5b9f665c8a"
+elb_dns_name = [
+  "ELB-mockinfrawebservers-1478364048.us-east-1.elb.amazonaws.com",
+]
+elb_sg_id = "sg-0d41f3190fd9dd358"
+private_subnets_id = [
+  [
+    "subnet-05abe123599f8b303",
+    "subnet-07d5672769d6ef791",
+  ],
+]
+public_subnets_cidr = [
+  [
+    "10.150.1.0/24",
+    "10.150.2.0/24",
+  ],
+]
+public_subnets_id = [
+  [
+    "subnet-0ff8934b45cacc2a2",
+    "subnet-053f657183e7b2e18",
+  ],
+]
+vpc_cidr = "10.150.0.0/16"
+vpc_id = "vpc-0db3fdc08d4e1a198"
+webser_sg_id = "sg-0b60744ce66441a95"
+```
+
+**You can find them in the output.tf files**
+
+
+## 1.6. Tags policy
 We added some default tags for every resources terraform will deployed. You can find them in provider.tf in mockinfra-env folder:
 ```terraform
 default_tags {
     tags = {
-      Authors     = "Antoine STERNA_Remi GRUFFAT"
+      Authors     = "Antoine STERNA-Remi GRUFFAT"
       Project     = "Awscloudproject-5IRC"
       Environment = "MockInfrastructure"
       DeployedBy  = "Terraform"
@@ -113,7 +150,7 @@ default_tags {
 ```
 That means every ressources (except auto scalling group) will have these tags in addition to the others when ressources are deployed
 
-## 1.5. Usage
+## 1.7. Usage
 1. Clone the repository
 2. Set up terraform, aws cli and pre-commit hooks
 3. Set up your aws credentials (AWS ACCESS KEY and AWS SECRET KEY) for terraform
@@ -122,6 +159,17 @@ That means every ressources (except auto scalling group) will have these tags in
 6. `terraform plan`
 7. `terraform apply`
 
+## 1.8. Demonstration
+
+As you can see above, we fetched automaticly (at the end of the `terraform apply` process) the DNS name of our Elastic Load Balancers.
+
+**Reminder**: Our ELB listen to port 80 and forward requests to available servers in our Auto Scaling Group who host the webservices (simple docker container with nginx)
+
+Let's try to connect to our ELB: [http://ELB-mockinfrawebservers-1478364048.us-east-1.elb.amazonaws.com](http://ELB-mockinfrawebservers-1478364048.us-east-1.elb.amazonaws.com)
+
+![image](https://user-images.githubusercontent.com/84475677/198371167-e66e8214-4933-49b5-a538-4e592ea363cc.png)
+
+**We can see that our ELB returned us the answer given by the webservers that host the service**
 
 
 
@@ -163,14 +211,12 @@ That means every ressources (except auto scalling group) will have these tags in
 
 
 
-
-
-## 1.6. Useful links
+## 1.9. Useful links
 </br>
 
 [links](https://aws.amazon.com/architecture/security-identity-compliance/?cards-all.sort-by=item.additionalFields.sortDate&cards-all.sort-order=desc&awsf.content-type=*all&awsf.methodology=*all)
 [ssh best practices (from original author)](https://nvlpubs.nist.gov/nistpubs/ir/2015/nist.ir.7966.pdf)
-## 1.7. TODO list
+## 1.10. TODO list
 - EC2 encryption volumes (voir KMS)
 - VPC flowlogs
 - multi-tier infrastructure (Presentation - Application - Data)
@@ -187,9 +233,9 @@ That means every ressources (except auto scalling group) will have these tags in
  - Tag policies (AWS organazitations) => Unfortunately, no rights on this service with labs account
  - Infra AWS draw.io
 
-## 1.8. Architecture
+## 1.11. Architecture
 
 ![Architecture](https://user-images.githubusercontent.com/84475677/197707646-c85bcebc-6ee1-4538-8038-2d6735579699.png)
 
-## 1.9. Flow matrix
+## 1.12. Flow matrix
 ![flow matrix](https://user-images.githubusercontent.com/84475677/197709780-8ed712af-26bf-408f-8df9-68c6cd836cee.png)
