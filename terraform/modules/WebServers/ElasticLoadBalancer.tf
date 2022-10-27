@@ -6,7 +6,6 @@ resource "aws_elb" "ELB_Webservers" {
 
   access_logs {
     bucket = aws_s3_bucket.elb_logs.bucket
-
   }
 
   listener {
@@ -15,9 +14,6 @@ resource "aws_elb" "ELB_Webservers" {
     instance_port     = 80
     instance_protocol = "http"
   }
-
-
-
 
   health_check {
     healthy_threshold   = 2
@@ -29,8 +25,8 @@ resource "aws_elb" "ELB_Webservers" {
 }
 
 data "aws_elb_service_account" "main" {}
-resource "aws_s3_bucket_public_access_block" "block_public_policy" {
 
+resource "aws_s3_bucket_public_access_block" "block_public_policy" {
   bucket                  = aws_s3_bucket.elb_logs.bucket
   block_public_acls       = true
   block_public_policy     = true
@@ -45,7 +41,6 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "encryption" {
       sse_algorithm = "aws:kms"
     }
   }
-
 }
 
 resource "aws_s3_bucket_versioning" "versioning" {
@@ -59,9 +54,7 @@ resource "aws_s3_bucket" "elb_logs" {
   #checkov:skip=CKV_AWS_144: "Ensure that S3 bucket has cross-region replication enabled"
   #checkov:skip=CKV_AWS_18: "Ensure the S3 bucket has access logging enabled"
   bucket = "elblogsawscloudproject"
-
   policy = <<POLICY
-
 {
   "Id": "Policy",
   "Version": "2012-10-17",

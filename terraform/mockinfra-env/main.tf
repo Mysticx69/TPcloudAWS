@@ -43,12 +43,9 @@ resource "aws_instance" "bastion" {
   security_groups = [aws_security_group.bastionhost_sg.id]
   subnet_id       = element(element(module.Networking.public_subnets_id, 1), 0)
 
-
-
   metadata_options {
     http_endpoint = "enabled"
     http_tokens   = "optional"
-
   }
 
   root_block_device {
@@ -82,8 +79,6 @@ resource "aws_instance" "backend_host" {
   subnet_id       = element(element(module.Networking.private_subnets_id, 1), 0)
   user_data       = file("/home/user/dev/TPcloudAWS/terraform/modules/WebServers/scripts/backend.sh")
 
-
-
   metadata_options {
     http_endpoint = "enabled"
     http_tokens   = "optional"
@@ -111,8 +106,6 @@ resource "aws_instance" "mysql_db" {
   security_groups = [aws_security_group.mysql_sg.id]
   subnet_id       = element(element(module.Networking.private_subnets_id, 1), 1)
   user_data       = file("/home/user/dev/TPcloudAWS/terraform/modules/WebServers/scripts/mysql.sh")
-
-
 
   metadata_options {
     http_endpoint = "enabled"
@@ -200,6 +193,7 @@ resource "aws_security_group_rule" "allow_igress_elb_webservers" {
   source_security_group_id = aws_security_group.elb_sg.id
   security_group_id        = aws_security_group.webserver_sg.id
 }
+
 resource "aws_security_group_rule" "allow_igress_bastion_webservers" {
   description              = "Allow SSH igress from bastion host"
   type                     = "ingress"
@@ -210,7 +204,6 @@ resource "aws_security_group_rule" "allow_igress_bastion_webservers" {
   security_group_id        = aws_security_group.webserver_sg.id
 }
 
-
 resource "aws_security_group_rule" "egress_todatacenter_webservers" {
   description       = "Egress rule to companys datacenter"
   type              = "egress"
@@ -219,7 +212,6 @@ resource "aws_security_group_rule" "egress_todatacenter_webservers" {
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = aws_security_group.webserver_sg.id
-
 }
 
 ############################
@@ -232,7 +224,6 @@ resource "aws_security_group" "bastionhost_sg" {
 }
 
 resource "aws_security_group_rule" "allow_ssh_devops_bastionhost" {
-
   description       = "Allow SSH to bastion host from DevOps Team"
   type              = "ingress"
   from_port         = 22
@@ -240,7 +231,6 @@ resource "aws_security_group_rule" "allow_ssh_devops_bastionhost" {
   protocol          = "tcp"
   cidr_blocks       = ["176.147.76.8/32"]
   security_group_id = aws_security_group.bastionhost_sg.id
-
 }
 
 resource "aws_security_group_rule" "egress_toservers_bastionhost" {
@@ -253,7 +243,6 @@ resource "aws_security_group_rule" "egress_toservers_bastionhost" {
   security_group_id = aws_security_group.bastionhost_sg.id
 }
 
-
 #############################
 # Backend Host SecurityGroup
 #############################
@@ -264,7 +253,6 @@ resource "aws_security_group" "backendhost_sg" {
 }
 
 resource "aws_security_group_rule" "allow_ssh_bastion_backendhost" {
-
   description              = "Allow SSH from bastion host"
   type                     = "ingress"
   from_port                = 22
@@ -272,11 +260,9 @@ resource "aws_security_group_rule" "allow_ssh_bastion_backendhost" {
   protocol                 = "tcp"
   source_security_group_id = aws_security_group.bastionhost_sg.id
   security_group_id        = aws_security_group.backendhost_sg.id
-
 }
 
 resource "aws_security_group_rule" "allow_ingress_webservers_backendhost" {
-
   description              = "Allow Ingress to backend host from websevers hosts"
   type                     = "ingress"
   from_port                = 8443
@@ -284,7 +270,6 @@ resource "aws_security_group_rule" "allow_ingress_webservers_backendhost" {
   protocol                 = "tcp"
   source_security_group_id = aws_security_group.webserver_sg.id
   security_group_id        = aws_security_group.backendhost_sg.id
-
 }
 
 resource "aws_security_group_rule" "egress_todatabase_backendhost" {
@@ -317,7 +302,6 @@ resource "aws_security_group" "mysql_sg" {
 }
 
 resource "aws_security_group_rule" "allow_ssh_bastionhost_mysqlhost" {
-
   description              = "Allow SSH to mySQL host from bastion host"
   type                     = "ingress"
   from_port                = 22
@@ -325,11 +309,9 @@ resource "aws_security_group_rule" "allow_ssh_bastionhost_mysqlhost" {
   protocol                 = "tcp"
   source_security_group_id = aws_security_group.bastionhost_sg.id
   security_group_id        = aws_security_group.mysql_sg.id
-
 }
 
 resource "aws_security_group_rule" "allow_ingress_backendhost_mysqlhost" {
-
   description              = "Allow Ingress to mySQL host from backend host"
   type                     = "ingress"
   from_port                = 3306
@@ -337,7 +319,6 @@ resource "aws_security_group_rule" "allow_ingress_backendhost_mysqlhost" {
   protocol                 = "tcp"
   source_security_group_id = aws_security_group.backendhost_sg.id
   security_group_id        = aws_security_group.mysql_sg.id
-
 }
 
 resource "aws_security_group_rule" "egress_datacenter_databasehost" {

@@ -30,7 +30,6 @@ resource "aws_internet_gateway" "ig" {
   }
 }
 
-
 #####################
 # EIP For Nat Gateway
 #####################
@@ -38,7 +37,6 @@ resource "aws_eip" "nat_eip" {
   vpc        = true
   depends_on = [aws_internet_gateway.ig] # Wait for IGW creation
 }
-
 
 #############
 # NAT Gateway
@@ -51,7 +49,6 @@ resource "aws_nat_gateway" "nat" {
     Name = "${var.environment}-natGW"
   }
 }
-
 
 ##################
 # Public subnet(s)
@@ -66,6 +63,7 @@ resource "aws_subnet" "public_subnet" {
     Name = "${var.environment}-${element(var.availability_zones, count.index)}-public-subnet"
   }
 }
+
 ###################
 # Private subnet(s)
 ###################
@@ -74,7 +72,6 @@ resource "aws_subnet" "private_subnet" {
   count             = length(var.private_subnets_cidr)
   cidr_block        = element(var.private_subnets_cidr, count.index)
   availability_zone = element(var.availability_zones, count.index)
-
 
   tags = {
     Name = "${var.environment}-${element(var.availability_zones, count.index)}-private-subnet"
@@ -102,6 +99,7 @@ resource "aws_route_table" "public_RT" {
     Name = "${var.environment}-public-route-table"
   }
 }
+
 ############################
 # Route For Internet Gateway
 ############################
@@ -110,6 +108,7 @@ resource "aws_route" "public_internet_gateway" {
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = aws_internet_gateway.ig.id
 }
+
 #######################
 # Route For NAT Gateway
 #######################
@@ -138,12 +137,10 @@ resource "aws_route_table_association" "private" {
 # Default Security Group For VPC
 ################################
 resource "aws_default_security_group" "default" {
-
   vpc_id = aws_vpc.vpc.id
   depends_on = [
     aws_vpc.vpc
   ]
-
 
   tags = {
     Name = "${var.environment}-default_SG"
