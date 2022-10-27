@@ -35,13 +35,15 @@ module "WebServers" {
 #####################
 resource "aws_instance" "bastion" {
   #checkov:skip=CKV_AWS_79: "Ensure Instance Metadata Service Version 1 is not enabled"
+  #checkov:skip=CKV_AWS_135: "Ensure that EC2 is EBS optimized" => not supported with labs account
+  #checkov:skip=CKV_AWS_126: "Ensure that detailed monitoring is enabled for EC2 instances" => not supported with labs account
   ami             = "ami-08c40ec9ead489470"
   instance_type   = "t2.micro"
   key_name        = "vockey"
   security_groups = [aws_security_group.bastionhost_sg.id]
   subnet_id       = element(element(module.Networking.public_subnets_id, 1), 0)
-  ebs_optimized   = true
-  monitoring      = true
+
+
 
   metadata_options {
     http_endpoint = "enabled"
@@ -71,14 +73,16 @@ resource "aws_eip" "bastion_eip" {
 ######################
 resource "aws_instance" "backend_host" {
   #checkov:skip=CKV_AWS_79: "Ensure Instance Metadata Service Version 1 is not enabled"
+  #checkov:skip=CKV_AWS_135: "Ensure that EC2 is EBS optimized" => not supported with labs account
+  #checkov:skip=CKV_AWS_126: "Ensure that detailed monitoring is enabled for EC2 instances" => not supported with labs account
   ami             = "ami-08c40ec9ead489470"
   instance_type   = "t2.micro"
   key_name        = "vockey"
   security_groups = [aws_security_group.backendhost_sg.id]
   subnet_id       = element(element(module.Networking.private_subnets_id, 1), 0)
   user_data       = file("/home/user/dev/TPcloudAWS/terraform/modules/WebServers/scripts/backend.sh")
-  ebs_optimized   = true
-  monitoring      = true
+
+
 
   metadata_options {
     http_endpoint = "enabled"
@@ -98,15 +102,17 @@ resource "aws_instance" "backend_host" {
 # Create Database host
 ######################
 resource "aws_instance" "mysql_db" {
-  #checkov:skip=CKV_AWS_79: "Ensure Instance Metadata Service Version 1 is not enabled"
+  #checkov:skip=CKV_AWS_79:"Ensure Instance Metadata Service Version 1 is not enabled"
+  #checkov:skip=CKV_AWS_135:"Ensure that EC2 is EBS optimized" => not supported with labs account
+  #checkov:skip=CKV_AWS_126:"Ensure that detailed monitoring is enabled for EC2 instances" => not supported with labs account
   ami             = "ami-08c40ec9ead489470"
   instance_type   = "t2.micro"
   key_name        = "vockey"
   security_groups = [aws_security_group.mysql_sg.id]
   subnet_id       = element(element(module.Networking.private_subnets_id, 1), 1)
   user_data       = file("/home/user/dev/TPcloudAWS/terraform/modules/WebServers/scripts/mysql.sh")
-  ebs_optimized   = true
-  monitoring      = true
+
+
 
   metadata_options {
     http_endpoint = "enabled"
