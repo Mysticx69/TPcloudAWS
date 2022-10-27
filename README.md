@@ -6,6 +6,7 @@
     - [1.3.1. Networking module](#131-networking-module)
     - [1.3.2. WebServers module](#132-webservers-module)
   - [1.4. Modules calls and extra ressources](#14-modules-calls-and-extra-ressources)
+  - [1.5 Tags policy](#15-tags-policy)
   - [1.5. Usage](#15-usage)
   - [1.6. Useful links](#16-useful-links)
   - [1.7. TODO list](#17-todo-list)
@@ -97,6 +98,19 @@ The aim of this module is to deploy a full working entry point for your web serv
 ## 1.4. Modules calls and extra ressources
 The entrypoint of terraform is in mockinfra-env folder, this is where everything is regrouped. You will find in the main.tf  all resources that are to be deployed.
 There is the modules calls and some extra ressources like the bastion host, backend host, database host and all of security groups needed.
+
+## 1.5 Tags policy
+We added some default tags for every resources terraform will deployed. You can find them in provider.tf in mockinfra-env folder:
+```terraform
+default_tags {
+    tags = {
+      Authors     = "Antoine STERNA_Remi GRUFFAT"
+      Project     = "Awscloudproject-5IRC"
+      Environment = "MockInfrastructure"
+      DeployedBy  = "Terraform"
+    }
+  }
+```
 
 ## 1.5. Usage
 1. Clone the repository
