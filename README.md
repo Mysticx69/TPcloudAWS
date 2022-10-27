@@ -6,6 +6,7 @@
     - [1.3.1. Networking module](#131-networking-module)
     - [1.3.2. WebServers module](#132-webservers-module)
   - [1.4. Modules calls and extra ressources](#14-modules-calls-and-extra-ressources)
+  - [Usage](#usage)
   - [1.5. Useful links](#15-useful-links)
   - [1.6. TODO list](#16-todo-list)
   - [1.7. Architecture](#17-architecture)
@@ -19,6 +20,17 @@ We added some extra things (compared to what was asked in the TP subject):
 - We deployed an Elastic Load Balancer (ELB) in frontend who listen to port 80 and forward to an Auto Scalling Group (of our webservers) to access web services. We dont have access to Amazon Certificate Manager to deploy service on HTTPS.
 - We deployed a bastion host for devops team with correct security group. Unfortunately, we dont have access to marketplace to deploy bastion CIS host (hardened VM) but it's my recommendation.
 - In some security groups, you will find an extra ip : `176.147.76.8/32`. It's my personnal internet box public Ip for test purposes and to reach web services and so on. Feel free to communicate your public IP so I can add it to security groups so you can also test services.
+
+All the code was written following the best practices enonced in the e-book [here](https://www.terraform-best-practices.com)
+
+A `.pre-commit-config.yaml` at the root of the project with some hooks :
+
+- terraform-checkov
+  - Analyse all your terraform code in a security point of view and alert you if he finds something wrong
+- terraform-tflint
+  - Analyse all your terraform code and alert you if you have bad or deprecated code structure.
+
+Others usefull hooks (check the .pre-commit-config.yaml)
 
 ## 1.2. Code structure
 ```bash
@@ -85,6 +97,15 @@ The aim of this module is to deploy a full working entry point for your web serv
 ## 1.4. Modules calls and extra ressources
 The entrypoint of terraform is in mockinfra-env folder, this is where everything is regrouped. You will find in the main.tf  all resources that are to be deployed.
 There is the modules calls and some extra ressources like the bastion host, backend host, database host and all of security groups needed.
+
+## Usage
+1. Clone the repository
+2. Set up terraform, aws cli and pre-commit hooks
+3. Set up your aws credentials (AWS ACCESS KEY and AWS SECRET KEY) for terraform
+4. Go to the mockinfra-env folder
+5. `terraform init --upgrade`
+6. `terraform plan`
+7. `terraform apply`
 
 
 
