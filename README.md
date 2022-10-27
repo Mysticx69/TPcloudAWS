@@ -17,7 +17,7 @@
 
 ## 1.1. Architecture diagrams
 
-![archi](https://user-images.githubusercontent.com/84475677/198381491-039c68d1-2d8a-4434-b6e4-60d53323417b.png)
+![archi](https://user-images.githubusercontent.com/84475677/198381834-a5c5157c-dbc7-40f0-a7d3-35ff7696553e.png)
 
 
 ## 1.2. Introduction
