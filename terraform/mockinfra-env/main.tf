@@ -68,9 +68,9 @@ resource "aws_eip" "bastion_eip" {
   instance = aws_instance.bastion.id
 }
 
-######################
+#####################
 # Create Backend host
-######################
+#####################
 resource "aws_instance" "backend_host" {
   #checkov:skip=CKV_AWS_79: "Ensure Instance Metadata Service Version 1 is not enabled"
   #checkov:skip=CKV_AWS_135: "Ensure that EC2 is EBS optimized" => not supported with labs account
@@ -340,7 +340,7 @@ resource "aws_security_group_rule" "allow_ingress_backendhost_mysqlhost" {
 
 }
 
-resource "aws_security_group_rule" "egress_databasehost" {
+resource "aws_security_group_rule" "egress_datacenter_databasehost" {
   description       = "Egress to companys Datacenter"
   type              = "egress"
   from_port         = 0
