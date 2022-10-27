@@ -111,6 +111,7 @@ default_tags {
     }
   }
 ```
+That means every ressources (except auto scalling group) will have these tags in addition to the others when ressources are deployed
 
 ## 1.5. Usage
 1. Clone the repository
