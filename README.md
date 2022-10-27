@@ -22,7 +22,7 @@ We added some extra things (compared to what was asked in the TP subject):
 - We deployed a bastion host for devops team with correct security group. Unfortunately, we dont have access to marketplace to deploy bastion CIS host (hardened VM) but it's my recommendation.
 - In some security groups, you will find an extra ip : `176.147.76.8/32`. It's my personnal internet box public Ip for test purposes and to reach web services and so on. Feel free to communicate your public IP so I can add it to security groups so you can also test services.
 
-All the code was written following the best practices enonced in the e-book [here](https://www.terraform-best-practices.com)
+**All the code was written following the best practices enonced in the e-book >[here](https://www.terraform-best-practices.com)<**
 
 A `.pre-commit-config.yaml` at the root of the project with some hooks :
 
@@ -167,6 +167,7 @@ That means every ressources (except auto scalling group) will have these tags in
 
 ## 1.6. Useful links
 </br>
+
 [links](https://aws.amazon.com/architecture/security-identity-compliance/?cards-all.sort-by=item.additionalFields.sortDate&cards-all.sort-order=desc&awsf.content-type=*all&awsf.methodology=*all)
 [ssh best practices (from original author)](https://nvlpubs.nist.gov/nistpubs/ir/2015/nist.ir.7966.pdf)
 ## 1.7. TODO list
