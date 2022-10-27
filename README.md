@@ -97,7 +97,7 @@ The aim of this module is to deploy a full working entry point for your web serv
 
 ## 1.4. Modules calls and extra ressources
 The entrypoint of terraform is in mockinfra-env folder, this is where everything is regrouped. You will find in the main.tf  all resources that are to be deployed.
-There is the modules calls and some extra ressources like the bastion host, backend host, database host and all of security groups needed.
+There is the modules calls and some extra ressources like the bastion host, backend host, database host, all of security groups needed, KMS keys, etc...
 
 ## 1.5 Tags policy
 We added some default tags for every resources terraform will deployed. You can find them in provider.tf in mockinfra-env folder:

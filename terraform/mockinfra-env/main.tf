@@ -49,7 +49,9 @@ resource "aws_instance" "bastion" {
   }
 
   root_block_device {
-    encrypted = true
+    encrypted  = true
+    kms_key_id = aws_kms_key.key1.id
+
   }
 
   tags = {
@@ -85,7 +87,8 @@ resource "aws_instance" "backend_host" {
   }
 
   root_block_device {
-    encrypted = true
+    encrypted  = true
+    kms_key_id = aws_kms_key.key1.id
   }
 
   tags = {
@@ -113,7 +116,8 @@ resource "aws_instance" "mysql_db" {
   }
 
   root_block_device {
-    encrypted = true
+    encrypted  = true
+    kms_key_id = aws_kms_key.key1.id
   }
 
   tags = {
@@ -121,7 +125,17 @@ resource "aws_instance" "mysql_db" {
   }
 }
 
+################
+# Create KMS key
+################
+resource "aws_kms_key" "key1" {
+  enable_key_rotation     = true
+  deletion_window_in_days = 30
 
+  tags = {
+    "Name" = "KEY1"
+  }
+}
 
 #####################################
 # Elastic Load Balancer SecurityGroup
