@@ -95,7 +95,7 @@ Deploying this Quick Start with default parameters builds the following Linux Ba
 
 Architecture :
 
-IMAGE architecture 
+![linux-bastion-architecture](https://user-images.githubusercontent.com/71137818/199471061-56b15d26-2734-438c-a8ad-7f3b1a51f635.png)
 
 - A highly available architecture that spans two Availability Zones.*
 - A virtual private cloud (VPC) configured with public and private subnets, according to AWS best practices, to provide you with your own virtual network on AWS.*
