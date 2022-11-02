@@ -11,7 +11,7 @@ Here are the 3 tools recommanded :
 
 Amazon [CloudWatch](https://aws.amazon.com/cloudwatch/?nc1=h_ls) collects and visualizes real-time logs, metrics, and event data in automated dashboards to streamline your infrastructure and application maintenance.
 
-IMAGE CLOUDWATCH 
+<img width="1180" alt="Product-Page-Diagram_Amazon-CloudWatch (1) e9686469670ce5278b9ccf847834f40d5874efa4" src="https://user-images.githubusercontent.com/71137818/199541365-6de5f745-d149-4d7e-82a1-0d74f4e88b50.png">
 
 You can create alarms that watch metrics and send notifications or automatically make changes to the resources you are monitoring when a threshold is breached. For example, you can monitor the CPU usage and disk reads and writes of your Amazon EC2 instances and then use that data to determine whether you should launch additional instances to handle increased load. You can also use this data to stop under-used instances to save money.
 
@@ -32,12 +32,11 @@ All the [features](https://aws.amazon.com/cloudwatch/features/) about AWS CloudW
 
 
 
-# Amazon Cloud trail
+## Amazon Cloud trail
 
 AWS CloudTrail monitors and records account activity across your AWS infrastructure, giving you control over storage, analysis, and remediation actions.
 
-IMAGE CLOUD TRAIL
-
+![product-page-diagram_AWS-CloudTrail_HIW feb63815c1869399371b4b9cc1ae00e78ed9e67f](https://user-images.githubusercontent.com/71137818/199541385-a952a01d-d6dc-4f53-9294-492c2227430b.png)
 
 It can be used for different cases : 
 
@@ -57,8 +56,7 @@ All the [features](https://aws.amazon.com/cloudtrail/features/) about AWS CloudW
 
 Amazon [GuardDuty](https://aws.amazon.com/guardduty/?nc1=h_ls) is a threat detection service that continuously monitors your AWS accounts and workloads for malicious activity and delivers detailed security findings for visibility and remediation.
 
-IMAGE GUARD DUTY
-
+![Amazon-GuardDuty_HIW 057a144483974cb73ab5f3f87a50c7c79f6521fb](https://user-images.githubusercontent.com/71137818/199541397-f4ef17fd-69b6-4c0f-8d0e-fa9d76d39ff6.png)
 
 It can be used for different cases : 
 - Improve security operations visibility
