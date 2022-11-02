@@ -34,7 +34,7 @@ All the [features](https://aws.amazon.com/cloudwatch/features/) about AWS CloudW
 
 ## Amazon Cloud trail
 
-AWS CloudTrail monitors and records account activity across your AWS infrastructure, giving you control over storage, analysis, and remediation actions.
+AWS [CloudTrail](https://aws.amazon.com/cloudtrail/?nc1=h_ls) monitors and records account activity across your AWS infrastructure, giving you control over storage, analysis, and remediation actions.
 
 ![product-page-diagram_AWS-CloudTrail_HIW feb63815c1869399371b4b9cc1ae00e78ed9e67f](https://user-images.githubusercontent.com/71137818/199541385-a952a01d-d6dc-4f53-9294-492c2227430b.png)
 
