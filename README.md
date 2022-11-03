@@ -55,6 +55,8 @@ We added :
 - Tags policy (Our own policy since AWS organization now available in labs accounts)
 - VPC flowlogs to AWS cloudwatch
 
+Nb: We didnt add network access list in our project cause since we have an ELB in public subnets, we cant specify his IP and we cant specify resource tag name in NACL. However, we highly recommend to use NGFW instead of NACL.
+
 **All the code was written following the best practices enonced in the e-book >[here](https://www.terraform-best-practices.com)<**
 
 A `.pre-commit-config.yaml` at the root of the project with some hooks :
