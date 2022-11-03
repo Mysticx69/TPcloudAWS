@@ -564,7 +564,7 @@ More information [here](https://docs.aws.amazon.com/guardduty/latest/ug/what-is-
 
 All the [features](https://aws.amazon.com/guardduty/features/) about AWS CloudWatch
 
-## Authors
+# Authors
 
 Antoine Sterna &
 Remi Gruffat
