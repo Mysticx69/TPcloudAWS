@@ -344,3 +344,63 @@ resource "aws_security_group_rule" "egress_datacenter_databasehost" {
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = aws_security_group.mysql_sg.id
 }
+
+
+#####################
+# Public Subnets NACL
+#####################
+# resource "aws_network_acl" "nacl_public_subnets" {
+#   vpc_id     = module.Networking.vpc_id
+#   subnet_ids = module.Networking.public_subnets_id
+# }
+
+# resource "aws_network_acl_rule" "allow_http" {
+#   network_acl_id = aws_network_acl.nacl_public_subnets.id
+#   rule_number    = 10
+#   protocol       = "tcp"
+#   rule_action    = "allow"
+#   from_port      = "80"
+#   to_port        = "80"
+# }
+
+# resource "aws_network_acl_rule" "allow_https" {
+#   network_acl_id = aws_network_acl.nacl_public_subnets.id
+#   rule_number    = 20
+#   protocol       = "tcp"
+#   rule_action    = "allow"
+#   from_port      = "443"
+#   to_port        = "443"
+
+# }
+
+# resource "aws_network_acl_rule" "allow_ssh" {
+#   network_acl_id = aws_network_acl.nacl_public_subnets.id
+#   rule_number    = 30
+#   protocol       = "tcp"
+#   rule_action    = "allow"
+#   cidr_block     = "13.67.153.32/27"
+#   from_port      = "22"
+#   to_port        = "22"
+# }
+
+
+# resource "aws_network_acl_rule" "allow_ssh_home" {
+#   network_acl_id = aws_network_acl.nacl_public_subnets.id
+#   rule_number    = 40
+#   protocol       = "tcp"
+#   rule_action    = "allow"
+#   cidr_block     = "172.147.76.8/32"
+#   from_port      = "22"
+#   to_port        = "22"
+# }
+
+
+# resource "aws_network_acl_rule" "allow_traffic_return" {
+#   network_acl_id = aws_network_acl.nacl_public_subnets.id
+#   rule_number    = 50
+#   protocol       = "tcp"
+#   rule_action    = "allow"
+#   cidr_block     = "0.0.0.0/0"
+#   from_port      = "1024"
+#   to_port        = "65535"
+# }
