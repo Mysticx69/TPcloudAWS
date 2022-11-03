@@ -12,6 +12,8 @@
   - [1.8. Tags policy](#18-tags-policy)
   - [1.9. Usage](#19-usage)
   - [1.10. Demonstration](#110-demonstration)
+    - [1.10.1. Elastic Load Balancer](#1101-elastic-load-balancer)
+    - [Bastion host](#bastion-host)
   - [1.11. Useful links](#111-useful-links)
   - [1.12. TODO list](#112-todo-list)
 
@@ -30,6 +32,7 @@ All this project was made in terraform, I will try to resume my code in the next
 We added some extra things (compared to what was asked in the TP subject):
 - We simulated webservers, backend servers and database servers using docker containers (deployed through user_data attribute in terraform)
 - We deployed an Elastic Load Balancer (ELB) in frontend who listen to port 80 and forward to an Auto Scalling Group (of our webservers) to access web services. We dont have access to Amazon Certificate Manager to deploy service on HTTPS.
+- We deployed a S3 Bucket with encryption, versioning for ELB logs
 - We deployed a bastion host for devops team with correct security group. Unfortunately, we dont have access to marketplace to deploy bastion CIS host (hardened VM) but it's my recommendation.
 - In some security groups, you will find an extra ip : `176.147.76.8/32`. It's my personnal internet box public Ip for test purposes and to reach web services and so on. Feel free to communicate your public IP so I can add it to security groups so you can also test services.
 
@@ -176,6 +179,8 @@ That means every ressources (except auto scalling group) will have these tags in
 
 ## 1.10. Demonstration
 
+### 1.10.1. Elastic Load Balancer
+
 As you can see above, we fetched automaticly (at the end of the `terraform apply` process) the DNS name of our Elastic Load Balancers.
 
 **Reminder**: Our ELB listen to port 80 and forward requests to available servers in our Auto Scaling Group who host the webservices (simple docker container with nginx)
@@ -185,6 +190,37 @@ Let's try to connect to our ELB: [http://ELB-mockinfrawebservers-1478364048.us-e
 ![image](https://user-images.githubusercontent.com/84475677/198371167-e66e8214-4933-49b5-a538-4e592ea363cc.png)
 
 **We can see that our ELB returned us the answer given by the webservers that host the service**
+
+### Bastion host
+
+We deployed a bastion host with an Elastic IP in a public subnet. Only devops can access the instance and only the bastion host can access to all the servers with SSH.
+We decided to use ssh agent for devops so they can connect to all servers through the bastion host without stocking all private keys within it.
+EIP of bastion : `3.214.244.149`
+
+1. We start the ssh agent on a devops machine
+2. We add the private key to our agent(public key associated has been deployed on all servers with terraform)
+3. We connect to our bastion host
+   - ssh -A option :  Enables forwarding of connections from an authentication agent such as ssh-agent(1).
+
+
+![bastion demo](https://user-images.githubusercontent.com/84475677/199689347-05825167-8291-494c-b759-3ca367c0f3a7.png)
+
+![on bastion](https://user-images.githubusercontent.com/84475677/199690918-a05204ab-7fd0-4204-b9f1-1540c22cf62f.png)
+
+**Now we are on our bastion host, let's connect to our database server in a private subnet**
+
+Private IP of our DB server : `10.150.20.115`
+
+![image](https://user-images.githubusercontent.com/84475677/199691202-6b2da047-5bcc-44d6-8e92-3f382fd0013f.png)
+
+Now we are connected on our database and we can see mysql running :
+
+![sqm running docker](https://user-images.githubusercontent.com/84475677/199692050-a887aee9-3425-43a1-ad26-3de954e705bd.png)
+
+
+
+
+
 
 
 
