@@ -30,6 +30,7 @@
   - [5.1. Amazon Cloud Watch](#51-amazon-cloud-watch)
   - [5.2. Amazon Cloud trail](#52-amazon-cloud-trail)
   - [5.3. Amazon GuardDuty](#53-amazon-guardduty)
+  - [Authors](#authors)
 
 ## 1.1. Architecture diagrams
 
@@ -562,3 +563,15 @@ It can be used for different cases :
 More information [here](https://docs.aws.amazon.com/guardduty/latest/ug/what-is-guardduty.html)
 
 All the [features](https://aws.amazon.com/guardduty/features/) about AWS CloudWatch
+
+## Authors
+
+Antoine Sterna
+
+Remi Gruffat
+
+**mail contact:**
+
+[antoine.sterna@cpe.fr](mailto:antoine.sterna@cpe.fr)
+
+[remi.gruffat@cpe.fr](mailto:remi.gruffat@cpe.fr)
