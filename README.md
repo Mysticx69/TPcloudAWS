@@ -485,9 +485,9 @@ We also recommand 3 other AWS tools to increasing security and monitoring of you
 
 Here are the 3 tools recommanded :
 
-- [Cloud Watch](#amazon-cloud-watch)
-- [Cloud trail](#amazon-cloud-trail)
-- [Guarduty](#amazon-guardduty)
+- [Cloud Watch](#51-amazon-cloud-watch)
+- [Cloud trail](#52-amazon-cloud-trail)
+- [Guarduty](#53-amazon-guardduty)
 
 
 ## 5.1. Amazon Cloud Watch
