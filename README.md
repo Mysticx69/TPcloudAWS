@@ -262,6 +262,9 @@ Now we are connected on our database and we can see mysql running :
 
 ![sqm running docker](https://user-images.githubusercontent.com/84475677/199692050-a887aee9-3425-43a1-ad26-3de954e705bd.png)
 
+**We can also create a config file for ssh and specify a lot of different options to control the behavior of ssh, for exemple ssh user, identity file, etc...**
+Here is the recommendations for SSH by ANSSI >[ssh-reco](https://www.ssi.gouv.fr/en/guide/openssh-secure-use-recommendations/)<
+
 
 # 2. Best practices
 
