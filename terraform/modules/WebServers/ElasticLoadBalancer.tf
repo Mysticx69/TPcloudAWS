@@ -22,6 +22,10 @@ resource "aws_elb" "ELB_Webservers" {
     interval            = 30
     target              = "HTTP:80/"
   }
+
+  tags = {
+    "Name" = "ELB_mockinfra"
+  }
 }
 
 ##########################

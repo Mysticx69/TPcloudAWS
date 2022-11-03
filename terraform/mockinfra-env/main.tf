@@ -145,6 +145,9 @@ resource "aws_security_group" "elb_sg" {
   name        = "elb_sg"
   description = "Security group for ELB"
   vpc_id      = module.Networking.vpc_id
+  tags = {
+    "Name" = "ELB_SG"
+  }
 }
 
 resource "aws_security_group_rule" "allow_http_elb_sg" {
@@ -153,7 +156,7 @@ resource "aws_security_group_rule" "allow_http_elb_sg" {
   from_port         = 80
   to_port           = 80
   protocol          = "tcp"
-  cidr_blocks       = ["176.147.76.8/32"]
+  cidr_blocks       = ["13.66.128.0/17", "176.147.76.8/32"]
   security_group_id = aws_security_group.elb_sg.id
 }
 
@@ -163,7 +166,7 @@ resource "aws_security_group_rule" "allow_https_elb_sg" {
   from_port         = 443
   to_port           = 443
   protocol          = "tcp"
-  cidr_blocks       = ["176.147.76.8/32"]
+  cidr_blocks       = ["13.66.128.0/17", "176.147.76.8/32"]
   security_group_id = aws_security_group.elb_sg.id
 }
 
@@ -196,6 +199,9 @@ resource "aws_security_group" "webserver_sg" {
   name        = "webservers_sg"
   description = "Security group for webservers"
   vpc_id      = module.Networking.vpc_id
+  tags = {
+    "Name" = "Webservers_SG"
+  }
 }
 
 resource "aws_security_group_rule" "allow_igress_elb_webservers" {
@@ -224,7 +230,7 @@ resource "aws_security_group_rule" "egress_todatacenter_webservers" {
   from_port         = 0
   to_port           = 0
   protocol          = "-1"
-  cidr_blocks       = ["0.0.0.0/0"]
+  cidr_blocks       = ["13.104.208.64/27"]
   security_group_id = aws_security_group.webserver_sg.id
 }
 
@@ -235,6 +241,9 @@ resource "aws_security_group" "bastionhost_sg" {
   name        = "bastionhost_sg"
   description = "Security Group For Bastion Host"
   vpc_id      = module.Networking.vpc_id
+  tags = {
+    "Name" = "Bastion_SG"
+  }
 }
 
 resource "aws_security_group_rule" "allow_ssh_devops_bastionhost" {
@@ -243,7 +252,7 @@ resource "aws_security_group_rule" "allow_ssh_devops_bastionhost" {
   from_port         = 22
   to_port           = 22
   protocol          = "tcp"
-  cidr_blocks       = ["176.147.76.8/32"]
+  cidr_blocks       = ["13.67.153.32/27", "176.147.76.8/32"]
   security_group_id = aws_security_group.bastionhost_sg.id
 }
 
@@ -264,6 +273,9 @@ resource "aws_security_group" "backendhost_sg" {
   name        = "backendhost_sg"
   description = "Security Group For Backend Host"
   vpc_id      = module.Networking.vpc_id
+  tags = {
+    "Name" = "BackendHost_SG"
+  }
 }
 
 resource "aws_security_group_rule" "allow_ssh_bastion_backendhost" {
@@ -302,7 +314,7 @@ resource "aws_security_group_rule" "egress_todatacenter_backendhost" {
   from_port         = 0
   to_port           = 0
   protocol          = "-1"
-  cidr_blocks       = ["0.0.0.0/0"]
+  cidr_blocks       = ["13.104.208.64/27"]
   security_group_id = aws_security_group.backendhost_sg.id
 }
 
@@ -313,6 +325,9 @@ resource "aws_security_group" "mysql_sg" {
   name        = "MySQL_sg"
   description = "Security Group For MySQL Host"
   vpc_id      = module.Networking.vpc_id
+  tags = {
+    "Name" = "MySQL_SG"
+  }
 }
 
 resource "aws_security_group_rule" "allow_ssh_bastionhost_mysqlhost" {
@@ -341,7 +356,7 @@ resource "aws_security_group_rule" "egress_datacenter_databasehost" {
   from_port         = 0
   to_port           = 0
   protocol          = "-1"
-  cidr_blocks       = ["0.0.0.0/0"]
+  cidr_blocks       = ["13.104.208.64/27"]
   security_group_id = aws_security_group.mysql_sg.id
 }
 

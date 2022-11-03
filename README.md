@@ -8,12 +8,13 @@
     - [1.5.1. Networking module](#151-networking-module)
     - [1.5.2. WebServers module](#152-webservers-module)
   - [1.6. Modules calls and extra ressources](#16-modules-calls-and-extra-ressources)
-  - [1.7. Terraform outputs](#17-terraform-outputs)
-  - [1.8. Tags policy](#18-tags-policy)
-  - [1.9. Usage](#19-usage)
-  - [1.10. Demonstration](#110-demonstration)
-    - [1.10.1. Elastic Load Balancer](#1101-elastic-load-balancer)
-    - [1.10.2. Bastion host](#1102-bastion-host)
+  - [1.7. Scripts](#17-scripts)
+  - [1.8. Terraform outputs](#18-terraform-outputs)
+  - [1.9. Tags policy](#19-tags-policy)
+  - [1.10. Usage](#110-usage)
+  - [1.11. Demonstration](#111-demonstration)
+    - [1.11.1. Elastic Load Balancer](#1111-elastic-load-balancer)
+    - [1.11.2. Bastion host](#1112-bastion-host)
 - [2. Best practices](#2-best-practices)
   - [2.1. Asymetric recommandations](#21-asymetric-recommandations)
   - [2.2. Symmetric recommandations](#22-symmetric-recommandations)
@@ -132,7 +133,37 @@ The aim of this module is to deploy a full working entry point for your web serv
 The entrypoint of terraform is in mockinfra-env folder, this is where everything is regrouped. You will find in the main.tf  all resources that are to be deployed.
 There is the modules calls and some extra ressources like the bastion host, backend host, database host, all of security groups needed, KMS keys, etc...
 
-## 1.7. Terraform outputs
+
+## 1.7. Scripts
+
+We writed 3 different bash scripts to deploy our services through user data with terraform. Those scripts will be executed right after the creation of the instance.
+Here is an exemple of webservers.sh to install docker and start a container with nginx:
+
+``` bash
+#!/bin/bash
+
+# Some sane options.
+set -e # Exit on first error.
+set -x # Print expanded commands to stdout.
+
+sudo apt-get update &&
+sudo apt-get install -y \
+    ca-certificates \
+    curl \
+    gnupg \
+    lsb-release &&
+sudo mkdir -p /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg &&
+
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+sudo apt-get update && sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin &&
+
+docker run --name static-site-2  -d -p 80:80 dockersamples/static-site
+```
+## 1.8. Terraform outputs
 I writted some usefull terraform outputs (fetched after resources creation) :
 
 ```bash
@@ -167,7 +198,7 @@ webser_sg_id = "sg-0b60744ce66441a95"
 **You can find them in the output.tf files**
 
 
-## 1.8. Tags policy
+## 1.9. Tags policy
 We added some default tags for every resources terraform will deployed. You can find them in provider.tf in mockinfra-env folder:
 ```terraform
 default_tags {
@@ -181,7 +212,7 @@ default_tags {
 ```
 That means every ressources (except auto scalling group) will have these tags in addition to the others when ressources are deployed
 
-## 1.9. Usage
+## 1.10. Usage
 1. Clone the repository
 2. Set up terraform, aws cli and pre-commit hooks
 3. Set up your aws credentials (AWS ACCESS KEY and AWS SECRET KEY) for terraform
@@ -190,9 +221,9 @@ That means every ressources (except auto scalling group) will have these tags in
 6. `terraform plan`
 7. `terraform apply`
 
-## 1.10. Demonstration
+## 1.11. Demonstration
 
-### 1.10.1. Elastic Load Balancer
+### 1.11.1. Elastic Load Balancer
 
 As you can see above, we fetched automaticly (at the end of the `terraform apply` process) the DNS name of our Elastic Load Balancers.
 
@@ -204,7 +235,7 @@ Let's try to connect to our ELB: [http://ELB-mockinfrawebservers-1478364048.us-e
 
 **We can see that our ELB returned us the answer given by the webservers that host the service**
 
-### 1.10.2. Bastion host
+### 1.11.2. Bastion host
 
 We deployed a bastion host with an Elastic IP in a public subnet. Only devops can access the instance and only the bastion host can access to all the servers with SSH.
 We decided to use ssh agent for devops so they can connect to all servers through the bastion host without stocking all private keys within it.
