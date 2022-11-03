@@ -209,6 +209,7 @@ default_tags {
       DeployedBy  = "Terraform"
     }
   }
+
 ```
 That means every ressources (except auto scalling group) will have these tags in addition to the others when ressources are deployed
 
