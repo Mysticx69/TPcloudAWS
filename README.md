@@ -231,7 +231,7 @@ As you can see above, we fetched automaticly (at the end of the `terraform apply
 
 Let's try to connect to our ELB: [http://ELB-mockinfrawebservers-1478364048.us-east-1.elb.amazonaws.com](http://ELB-mockinfrawebservers-1478364048.us-east-1.elb.amazonaws.com)
 
-![image](https://user-images.githubusercontent.com/84475677/198371167-e66e8214-4933-49b5-a538-4e592ea363cc.png)
+![hello docker](https://user-images.githubusercontent.com/84475677/199701018-91c6e61a-5445-4c97-bc51-d02f357713a6.png)
 
 **We can see that our ELB returned us the answer given by the webservers that host the service**
 
