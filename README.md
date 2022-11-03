@@ -33,12 +33,18 @@ We added some extra things (compared to what was asked in the TP subject):
 - We deployed a bastion host for devops team with correct security group. Unfortunately, we dont have access to marketplace to deploy bastion CIS host (hardened VM) but it's my recommendation.
 - In some security groups, you will find an extra ip : `176.147.76.8/32`. It's my personnal internet box public Ip for test purposes and to reach web services and so on. Feel free to communicate your public IP so I can add it to security groups so you can also test services.
 
+We added :
+- EC2 encryption volumes (with KMS)
+- Tags policy (Our own policy since AWS organization now available in labs accounts)
+- VPC flowlogs
+
 **All the code was written following the best practices enonced in the e-book >[here](https://www.terraform-best-practices.com)<**
 
 A `.pre-commit-config.yaml` at the root of the project with some hooks :
 
 - terraform-checkov
   - Analyse all your terraform code in a security point of view and alert you if he finds something wrong
+  - Exemple : S3 bucket with public access; Security groups with lack of restrictions; and so on...
 - terraform-tflint
   - Analyse all your terraform code and alert you if you have bad or deprecated code structure.
 
