@@ -566,12 +566,11 @@ All the [features](https://aws.amazon.com/guardduty/features/) about AWS CloudWa
 
 ## Authors
 
-Antoine Sterna
-
+Antoine Sterna &
 Remi Gruffat
 
 **mail contact:**
 
 [antoine.sterna@cpe.fr](mailto:antoine.sterna@cpe.fr)
-
+</br>
 [remi.gruffat@cpe.fr](mailto:remi.gruffat@cpe.fr)
