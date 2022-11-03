@@ -29,8 +29,6 @@
   - [5.1. Amazon Cloud Watch](#51-amazon-cloud-watch)
   - [5.2. Amazon Cloud trail](#52-amazon-cloud-trail)
   - [5.3. Amazon GuardDuty](#53-amazon-guardduty)
-  - [5.4. Useful links](#54-useful-links)
-  - [5.5. TODO list](#55-todo-list)
 
 ## 1.1. Architecture diagrams
 
@@ -524,62 +522,3 @@ It can be used for different cases :
 More information [here](https://docs.aws.amazon.com/guardduty/latest/ug/what-is-guardduty.html)
 
 All the [features](https://aws.amazon.com/guardduty/features/) about AWS CloudWatch
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-## 5.4. Useful links
-</br>
-
-[links](https://aws.amazon.com/architecture/security-identity-compliance/?cards-all.sort-by=item.additionalFields.sortDate&cards-all.sort-order=desc&awsf.content-type=*all&awsf.methodology=*all)
-[ssh best practices (from original author)](https://nvlpubs.nist.gov/nistpubs/ir/2015/nist.ir.7966.pdf)
-## 5.5. TODO list
-- EC2 encryption volumes (voir KMS)
-- VPC flowlogs
-- multi-tier infrastructure (Presentation - Application - Data)
-- TAGS
-- Give recommendations for the AWS users and the root account management.
-- Give recommendations on which AWS or other third-party services can be used to add
-  security to the infrastructure, for example EDR (Endpoint Detection and Response), IDS
-  (Intrusion detection system), IPS (Intrusion prevention system) => marketplace? Fortigate, palo alto (for firewall) etc
-- **Review at least 2 guidelines or best practices (from NIST, ANSSI or CIS) and
-  describe 3 best practices that we should apply for this kind of infrastructure
-  NIST: https://csrc.nist.gov/publications/sp800
-  ANSSI: https://www.ssi.gouv.fr/administration/bonnes-pratiques/
-  CIS: https://downloads.cisecurity.org/**
- - Tag policies (AWS organazitations) => Unfortunately, no rights on this service with labs account
- - Infra AWS draw.io
-
-=
