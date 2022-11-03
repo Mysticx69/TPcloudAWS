@@ -17,7 +17,7 @@
 
 ## 1.1. Architecture diagrams
 
-![archi](https://user-images.githubusercontent.com/84475677/198383206-e17c043f-df55-4ec9-8318-dcde883df77f.png)
+![archi](https://user-images.githubusercontent.com/84475677/199681417-5bfeb80e-246c-40b3-a089-647e04e91f94.png)
 
 
 ## 1.2. Flow matrix
