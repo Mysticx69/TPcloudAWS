@@ -14,12 +14,27 @@
   - [1.10. Demonstration](#110-demonstration)
     - [1.10.1. Elastic Load Balancer](#1101-elastic-load-balancer)
     - [1.10.2. Bastion host](#1102-bastion-host)
-  - [1.11. Useful links](#111-useful-links)
-  - [1.12. TODO list](#112-todo-list)
+- [2. Best practices](#2-best-practices)
+  - [2.1. Asymetric recommandations](#21-asymetric-recommandations)
+  - [2.2. Symmetric recommandations](#22-symmetric-recommandations)
+  - [2.3. Password creation](#23-password-creation)
+    - [2.3.1. Password manager](#231-password-manager)
+    - [2.3.2. Multi-factor authentication (MFA)](#232-multi-factor-authentication-mfa)
+  - [2.4. AWS Bastion](#24-aws-bastion)
+- [3. Recommendations for the AWS users and the root account management.](#3-recommendations-for-the-aws-users-and-the-root-account-management)
+  - [3.1. Limit task performed by root user](#31-limit-task-performed-by-root-user)
+  - [3.2. IAM User](#32-iam-user)
+- [4. Security to the infrastructure](#4-security-to-the-infrastructure)
+- [5. Other recommandations](#5-other-recommandations)
+  - [5.1. Amazon Cloud Watch](#51-amazon-cloud-watch)
+  - [5.2. Amazon Cloud trail](#52-amazon-cloud-trail)
+  - [5.3. Amazon GuardDuty](#53-amazon-guardduty)
+  - [5.4. Useful links](#54-useful-links)
+  - [5.5. TODO list](#55-todo-list)
 
 ## 1.1. Architecture diagrams
 
-![archi](https://user-images.githubusercontent.com/84475677/199681417-5bfeb80e-246c-40b3-a089-647e04e91f94.png)
+![archi](https://user-images.githubusercontent.com/84475677/199694637-d6f2656b-9962-492d-84dc-c04f8e79e91d.png)
 
 
 ## 1.2. Flow matrix
@@ -31,15 +46,15 @@ All this project was made in terraform, I will try to resume my code in the next
 </br>
 We added some extra things (compared to what was asked in the TP subject):
 - We simulated webservers, backend servers and database servers using docker containers (deployed through user_data attribute in terraform)
-- We deployed an Elastic Load Balancer (ELB) in frontend who listen to port 80 and forward to an Auto Scalling Group (of our webservers) to access web services. We dont have access to Amazon Certificate Manager to deploy service on HTTPS.
-- We deployed a S3 Bucket with encryption, versioning for ELB logs
+- We deployed an Elastic Load Balancer (ELB) in frontend who listen to port 80 and forward to an Auto Scalling Group (of our webservers) to access web services. We dont have access to Amazon Certificate Manager to deploy service on HTTPS properly.
+- We deployed a S3 Bucket with encryption, versioning and restrcited access for ELB logs
 - We deployed a bastion host for devops team with correct security group. Unfortunately, we dont have access to marketplace to deploy bastion CIS host (hardened VM) but it's my recommendation.
 - In some security groups, you will find an extra ip : `176.147.76.8/32`. It's my personnal internet box public Ip for test purposes and to reach web services and so on. Feel free to communicate your public IP so I can add it to security groups so you can also test services.
 
 We added :
 - EC2 encryption volumes (with KMS)
 - Tags policy (Our own policy since AWS organization now available in labs accounts)
-- VPC flowlogs
+- VPC flowlogs to AWS cloudwatch
 
 **All the code was written following the best practices enonced in the e-book >[here](https://www.terraform-best-practices.com)<**
 
@@ -218,6 +233,297 @@ Now we are connected on our database and we can see mysql running :
 ![sqm running docker](https://user-images.githubusercontent.com/84475677/199692050-a887aee9-3425-43a1-ad26-3de954e705bd.png)
 
 
+# 2. Best practices
+
+## 2.1. Asymetric recommandations
+The ANSSI recommand best pratcices relative to TLS protocol.
+In fact, TLS is used everyday :
+- ssh connect
+- https website
+- many other applications
+
+There is 6 declinaisons of the SSL/TLS protocol nowadays : SSLv2, SSLv3, TLS, TLS 1.1, TLS 1.2 and TLS 1.3.
+It is recommanded to use TLS 1.3, nevertheless TLS 1.2 can, under certain circumstances be considered as a strong usage.
+
+You should use TLS 1.3 and accept TLS 1.2
+
+You should **not** accept or use SSLv2, SSLv3, TLS 1.0 and TLS 1.1
+
+During key exchange, the client must authentify the server.
+
+The persistence privacy must be assured with PFS, you should use ephemeral Diffie-Hellman (ECDHE or by default, DHE)
+
+If you want more information, please check this [link](https://www.ssi.gouv.fr/uploads/2020/03/anssi-guide-recommandations_de_securite_relatives_a_tls-v1.2.pdf
+)
+
+
+
+## 2.2. Symmetric recommandations
+
+Prioritize AES or Chacha20 encryption algorithms
+Tolerate Camelia and ARIA encryption algorithms
+
+Hash functions: Only SHA-2 functions should be used, the others can not be considered as secure.
+
+
+
+## 2.3. Password creation
+[NIST recommandation](https://staysafeonline.org/online-safety-privacy-basics/passwords-securing-accounts/)
+The 3 main ways to have a secure password are :
+* Using strong password
+* With a password manager
+* With Multi-factor authentication (if available)
+
+No matter what accounts they protect, all passwords should be created with these three guiding principles in mind:
+- Long – Every one of your passwords should be at least 12 characters long.
+
+- Unique – Each account needs to be protected with its own unique password. Never reuse passwords. This way, if one of your accounts is compromised, your other accounts remain secured. We’re talking really unique, not just changing one character or adding a “2” at the end – to really trick up hackers, none of your passwords should look alike.
+- Complex – Each unique password should be a combination of upper case letters, lower case letters, numbers and special characters (like >,!?). Again, remember each password should be at least 12 characters long. Some websites and apps will even let you include spaces.
+
+If your password is long, unique and complex, our recommendation is that you don’t need to ever change it unless you become aware that an unauthorized person is accessing that account, or the password was compromised in a data breach.
+
+### 2.3.1. Password manager
+[Password manager](https://staysafeonline.org/online-safety-privacy-basics/password-managers/)
+
+But having such different and complex password for every application we use is really difficult to remember, that why it is also recommanded to use password manager instead of a messy note that are free access.
+
+The password manager will be an encrypted that no one can break. And you just need to remember one strong password in order to access all your passwords.
+
+NIST recommand different password manager options :
+- Keeper
+- Bitwarden
+- 1Password
+- Dashlane
+- LastPass
+
+### 2.3.2. Multi-factor authentication (MFA)
+[MFA](https://staysafeonline.org/online-safety-privacy-basics/multi-factor-authentication/)
+
+Multi-factor authentication is sometimes called two-factor authentication or two-step verification, and it is often abbreviated to MFA. No matter what you call it, MFA is a cybersecurity measure for an account that requires anyone logging in to prove their identity multiple ways. Typically, you will enter your username, password, and then prove your identity some other way, like with a fingerprint or by responding to a text message.
+
+We recommend that you implement MFA for any account that permits it, especially any account associated with work, school, email, banking, and social media.
+
+- Different forms of MFA :
+    - Extra PIN as well as you password
+    - Extra security question
+    - Code sent to your email or sms
+    - Biometric identifiers like facial recongnition or fingerprint scan
+    - Standalone app that requires you to approve each attempt to access an account
+    - An additional code either emailed to an account or texted to a mobile number
+    - A secure token – a separate piece of physical hardware, like a key fob, that verifies a person’s identity with a database or system
+
+You have different MFA software such as :
+- Google authenticator
+- Authy
+- Microsoft authenticator for microsoft applications
+
+
+## 2.4. AWS Bastion
+
+To access your EC2 instance on your private subnets from remote location while being secure, we recommand to setup a Linux bastion host
+
+Amazon give a [Quick Start Deployment Guide
+](https://aws-quickstart.github.io/quickstart-linux-bastion/) that I will explain here.
+
+Deploying this Quick Start with default parameters builds the following Linux Bastion Hosts environment in the AWS Cloud.
+
+Architecture :
+
+![linux-bastion-architecture](https://user-images.githubusercontent.com/71137818/199471061-56b15d26-2734-438c-a8ad-7f3b1a51f635.png)
+
+- A highly available architecture that spans two Availability Zones.*
+- A virtual private cloud (VPC) configured with public and private subnets, according to AWS best practices, to provide you with your own virtual network on AWS.*
+- In the public subnets:
+
+    - Managed network address translation (NAT) gateways to allow outbound internet access for resources in the private subnets.*
+
+  - A Linux bastion host in an Auto Scaling group for connecting to Amazon Elastic Compute Cloud (Amazon EC2) instances in public and private subnets.
+
+- An Amazon CloudWatch log group to hold the Linux bastion host shell history logs.
+
+- AWS Systems Manager for access to the bastion host.
+
+<sub> \*The template that deploys this Quick Start into an existing VPC skips the components marked by asterisks and prompts you for your existing VPC configuration. <sub>
+
+The point to have the Linux bastion host in an Auto Scaling group is that if you only have 1 Bastion host, it is known as a SPOF (Single Point of Failure), which means that none of your instance are accecible if just only 1 bastion host goes down. With the Auto scaling group, the SPOF is eliminated and we can access the different EC2 instance even if one bastion host goes down.
+
+It is also recommanded not to store the different private key on the Bastion host and use [ssh Agent Forwarding](https://www.ssh.com/academy/ssh/agent#ssh-agent-forwarding) instead
+
+
+
+https://staysafeonline.org/programs/cybersecurity-awareness-month/
+
+https://staysafeonline.org/online-safety-privacy-basics/passwords-securing-accounts/
+
+https://www.nist.gov/blogs/cybersecurity-insights/cybersecurity-awareness-month-2022-using-strong-passwords-and-password
+
+https://downloads.cisecurity.org/#/
+
+https://aws.amazon.com/solutions/implementations/linux-bastion/
+
+https://tsapps.nist.gov/publication/get_pdf.cfm?pub_id=901083
+
+https://docs.aws.amazon.com/config/latest/developerguide/security-best-practices-for-aws-waf.html
+
+https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-53r4.pdf
+
+
+# 3. Recommendations for the AWS users and the root account management.
+
+## 3.1. Limit task performed by root user
+
+Amazon recommand that you should only use root user for specifis [tasks]([linkurl](https://docs.aws.amazon.com/accounts/latest/reference/root-user-tasks.html)) **only** :
+ - To create the first [administrator]([linkurl](https://docs.aws.amazon.com/IAM/latest/UserGuide/getting-started_create-admin-group.html)) user in AWS IAM
+ - To perform tasks that ***only*** root user can perform :
+   - those tasks are :
+     - Change account settings
+     - Restore IAM permissions
+     - Activate IAM access to the Billing and Cost management console
+     - View certain tax invoices
+     - Close you AWS account
+     - Register as a seller
+     - Enable S3 bucket with MFA
+     - Edit or delete an Amazon Simple Storage Service (Amazon S3) bucket policy that includes an invalid virtual private cloud (VPC) ID or VPC endpoint ID
+     - Sign up for GovCloud
+
+So except thoses tasks : **Do not user the root user**
+
+- Do not use your AWS account root user access key
+  - If you don't already have an access key for your AWS account root user, don't create one unless you absolutely need to. Instead, use the root user to create an IAM user for yourself that has administrative permissions.
+  - If you must keep one available, [rotate](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html#Using_RotateAccessKey) (change) the access key regularly.
+  - If you do have an access key for your root user, delete it.
+  - Never share your AWS account root user password or access keys with anyone
+  - Use a strong password to help protect access to the AWS Management Console
+  - Enable AWS multi-factor authentication ([MFA](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_mfa.html)) on your AWS account root user account.
+
+
+
+https://docs.aws.amazon.com/accounts/latest/reference/root-user-tasks.html
+
+https://docs.aws.amazon.com/IAM/latest/UserGuide/getting-started_create-admin-group.html
+
+https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html#Using_RotateAccessKey
+
+https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_mfa.html
+
+## 3.2. IAM User
+
+- Use temporary credentials
+- Require multi-factor authentication (MFA)
+- Rotate access keys regularly for use cases that require long-term credential
+- Apply least-privilege permissions:
+  - grant only the permissions required to perform a task.
+    - For that you can use [IAM Access Analyzer]([linkurl](https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-policy-generation.html))  to generate least-privilege policies based on access activity
+- Regularly review and remove unused users, roles, permissions, policies, and credentials
+
+https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-policy-generation.html
+
+https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html
+
+https://aws.amazon.com/iam/resources/best-practices/
+
+
+
+
+# 4. Security to the infrastructure
+
+In order to increase security in the EC2 instance we recommand using multiple security solution such as EDR in order to secure data and endpoints, and prevent, detect, and respond to threats.
+
+You can use AWS services and third party solution offered in AWS [Marketplace](https://aws.amazon.com/marketplace) for that.
+
+We recommand [CrowdStrike](https://aws.amazon.com/marketplace/solutions/media-entertainment/edr/) as and EDR in order to have:
+
+- Protection against malware and malware-free attacks for workloads
+- Real-time and historical visibility into endpoint activity for threat detection, response, and forensics
+- Integrated intelligence and proactive threat hunting (Falcon OverWatch) to provide an additional layer of oversight and analysis
+- Visibility into workloads and assets across accounts and environments for better security and IT hygiene
+
+![firefox_pi8hiIUrbZ](https://user-images.githubusercontent.com/71137818/198871049-b4418b5f-3695-41d9-a180-f28002764605.png)
+
+We recommand also to have IPS or [IDS](https://aws.amazon.com/mp/scenarios/security/ids/) to increase security. You can also visit the [Marketplace](https://aws.amazon.com/marketplace) for that.
+
+You can either choose an EC2 instance IDS/IPS or you can choose to put a Next Gen Firewall.
+
+We recommand NGFW : it will provide much of same protections as standard firewalls, while also adding application-level inspection, intrusion prevention, and full-stack visibility.
+
+You can either put a [Fortinet VM](https://aws.amazon.com/marketplace/pp/prodview-wory773oau6wq?sr=0-4&ref_=beagle&applicationId=AWSMPContessa) or you physical FW if you have one.
+
+
+# 5. Other recommandations
+
+We also recommand 3 other AWS tools to increasing security and monitoring of your infrastrucure.
+
+Here are the 3 tools recommanded :
+
+- [Cloud Watch](#amazon-cloud-watch)
+- [Cloud trail](#amazon-cloud-trail)
+- [Guarduty](#amazon-guardduty)
+
+
+## 5.1. Amazon Cloud Watch
+
+Amazon [CloudWatch](https://aws.amazon.com/cloudwatch/?nc1=h_ls) collects and visualizes real-time logs, metrics, and event data in automated dashboards to streamline your infrastructure and application maintenance.
+
+<img width="1180" alt="Product-Page-Diagram_Amazon-CloudWatch (1) e9686469670ce5278b9ccf847834f40d5874efa4" src="https://user-images.githubusercontent.com/71137818/199541365-6de5f745-d149-4d7e-82a1-0d74f4e88b50.png">
+
+You can create alarms that watch metrics and send notifications or automatically make changes to the resources you are monitoring when a threshold is breached. For example, you can monitor the CPU usage and disk reads and writes of your Amazon EC2 instances and then use that data to determine whether you should launch additional instances to handle increased load. You can also use this data to stop under-used instances to save money.
+
+It can be used for different cases :
+
+- Monitor application performance
+  - Visualize performance data, create alarms, and correlate data to understand and resolve the root cause of performance issues in your AWS resources.
+- Perform root cause analysis
+  - Analyze metrics, logs, logs analytics, and user requests to speed up debugging and reduce overall mean time to resolution.
+- Optimize resources proactively
+  - Automate resource planning and lower costs by setting actions to occur when thresholds are met based on your specifications or machine learning models.
+- Test website impacts
+  - Find out exactly when your website is impacted and for how long by viewing screenshots, logs, and web requests at any point in time.
+
+You can check [here](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/WhatIsCloudWatch.html) the **Related AWS services** and how to **Access CloudWatch**
+
+All the [features](https://aws.amazon.com/cloudwatch/features/) about AWS CloudWatch
+
+
+
+## 5.2. Amazon Cloud trail
+
+AWS [CloudTrail](https://aws.amazon.com/cloudtrail/?nc1=h_ls) monitors and records account activity across your AWS infrastructure, giving you control over storage, analysis, and remediation actions.
+
+![product-page-diagram_AWS-CloudTrail_HIW feb63815c1869399371b4b9cc1ae00e78ed9e67f](https://user-images.githubusercontent.com/71137818/199541385-a952a01d-d6dc-4f53-9294-492c2227430b.png)
+
+It can be used for different cases :
+
+- Audit activity
+  - Monitor, store, and validate activity events for authenticity. Easily generate audit reports required by internal policies and external regulations.
+- Identify security incidents
+  - Detect unauthorized access using the Who, What, and When information in CloudTrail Events. Respond with rules-based EventBridge alerts and automated workflows.
+- Troubleshoot operational issues
+  - Continuously monitor API usage history using machine learning (ML) models to spot unusual activity in your AWS accounts, and determine root cause.
+
+More information [here](https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-user-guide.html)
+
+All the [features](https://aws.amazon.com/cloudtrail/features/) about AWS CloudWatch
+
+
+## 5.3. Amazon GuardDuty
+
+Amazon [GuardDuty](https://aws.amazon.com/guardduty/?nc1=h_ls) is a threat detection service that continuously monitors your AWS accounts and workloads for malicious activity and delivers detailed security findings for visibility and remediation.
+
+![Amazon-GuardDuty_HIW 057a144483974cb73ab5f3f87a50c7c79f6521fb](https://user-images.githubusercontent.com/71137818/199541397-f4ef17fd-69b6-4c0f-8d0e-fa9d76d39ff6.png)
+
+It can be used for different cases :
+- Improve security operations visibility
+  - Gain insight of compromised credentials, unusual data access in Amazon S3, API calls from known malicious IP addresses, and more.
+- Assist security analysts in investigations
+  - Receive security event findings with context, metadata, and impacted resource details, and determine their root cause using GuardDuty console integration with Amazon Detective.
+- Identify files containing malware
+  - Scan Amazon Elastic Block Store (EBS) for files that might have malware creating suspicious behavior on instance and container workloads running on Amazon EC2.
+- Route insightful information on security findings
+  - Route findings to your preferred operational tools using integrations with AWS Security Hub and Amazon EventBridge.
+
+More information [here](https://docs.aws.amazon.com/guardduty/latest/ug/what-is-guardduty.html)
+
+All the [features](https://aws.amazon.com/guardduty/features/) about AWS CloudWatch
 
 
 
@@ -254,20 +560,12 @@ Now we are connected on our database and we can see mysql running :
 
 
 
-
-
-
-
-
-
-
-
-## 1.11. Useful links
+## 5.4. Useful links
 </br>
 
 [links](https://aws.amazon.com/architecture/security-identity-compliance/?cards-all.sort-by=item.additionalFields.sortDate&cards-all.sort-order=desc&awsf.content-type=*all&awsf.methodology=*all)
 [ssh best practices (from original author)](https://nvlpubs.nist.gov/nistpubs/ir/2015/nist.ir.7966.pdf)
-## 1.12. TODO list
+## 5.5. TODO list
 - EC2 encryption volumes (voir KMS)
 - VPC flowlogs
 - multi-tier infrastructure (Presentation - Application - Data)
