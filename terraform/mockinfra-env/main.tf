@@ -360,7 +360,6 @@ resource "aws_security_group_rule" "egress_datacenter_databasehost" {
   security_group_id = aws_security_group.mysql_sg.id
 }
 
-
 #####################
 # Public Subnets NACL
 #####################
