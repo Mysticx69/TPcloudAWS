@@ -13,7 +13,7 @@
   - [1.9. Usage](#19-usage)
   - [1.10. Demonstration](#110-demonstration)
     - [1.10.1. Elastic Load Balancer](#1101-elastic-load-balancer)
-    - [Bastion host](#bastion-host)
+    - [1.10.2. Bastion host](#1102-bastion-host)
   - [1.11. Useful links](#111-useful-links)
   - [1.12. TODO list](#112-todo-list)
 
@@ -191,7 +191,7 @@ Let's try to connect to our ELB: [http://ELB-mockinfrawebservers-1478364048.us-e
 
 **We can see that our ELB returned us the answer given by the webservers that host the service**
 
-### Bastion host
+### 1.10.2. Bastion host
 
 We deployed a bastion host with an Elastic IP in a public subnet. Only devops can access the instance and only the bastion host can access to all the servers with SSH.
 We decided to use ssh agent for devops so they can connect to all servers through the bastion host without stocking all private keys within it.
