@@ -243,6 +243,7 @@ Let's try to connect to our ELB: [http://ELB-mockinfrawebservers-1478364048.us-e
 
 We deployed a bastion host with an Elastic IP in a public subnet. Only devops can access the instance and only the bastion host can access to all the servers with SSH.
 We decided to use ssh agent for devops so they can connect to all servers through the bastion host without stocking all private keys within it.
+We didnt deploy it in an Auto Scaling Group but we followed best pratices and deployed it with auto recovery. If the instance fail EC2 instance heal chekcs, the instance will be rebuild instantly with same config (including Elastic IP)
 EIP of bastion : `3.214.244.149`
 
 1. We start the ssh agent on a devops machine
