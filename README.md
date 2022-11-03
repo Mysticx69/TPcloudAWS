@@ -217,9 +217,10 @@ That means every ressources (except auto scalling group) will have these tags in
 2. Set up terraform, aws cli and pre-commit hooks
 3. Set up your aws credentials (AWS ACCESS KEY and AWS SECRET KEY) for terraform
 4. Go to the mockinfra-env folder
-5. `terraform init --upgrade`
-6. `terraform plan`
-7. `terraform apply`
+5. Add your public IP in security groups
+6. `terraform init --upgrade`
+7. `terraform plan`
+8. `terraform apply`
 
 ## 1.11. Demonstration
 
