@@ -136,7 +136,7 @@ There is the modules calls and some extra ressources like the bastion host, back
 
 ## 1.7. Scripts
 
-We writed 3 different bash scripts to deploy our services through user data with terraform. Those scripts will be executed right after the creation of the instance.
+We writed 3 differents bash scripts to deploy our services through user data with terraform. Those scripts will be executed right after the creation of the instance.
 Here is an exemple of webservers.sh to install docker and start a container with nginx:
 
 ``` bash
