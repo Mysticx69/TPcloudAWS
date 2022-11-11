@@ -30,7 +30,7 @@
   - [5.1. Amazon Cloud Watch](#51-amazon-cloud-watch)
   - [5.2. Amazon Cloud trail](#52-amazon-cloud-trail)
   - [5.3. Amazon GuardDuty](#53-amazon-guardduty)
-  - [Authors](#authors)
+- [Authors](#authors)
 
 ## 1.1. Architecture diagrams
 
@@ -564,7 +564,7 @@ More information [here](https://docs.aws.amazon.com/guardduty/latest/ug/what-is-
 
 All the [features](https://aws.amazon.com/guardduty/features/) about AWS CloudWatch
 
-## Authors
+# Authors
 
 Antoine Sterna &
 Remi Gruffat
@@ -574,3 +574,4 @@ Remi Gruffat
 [antoine.sterna@cpe.fr](mailto:antoine.sterna@cpe.fr)
 </br>
 [remi.gruffat@cpe.fr](mailto:remi.gruffat@cpe.fr)
+
