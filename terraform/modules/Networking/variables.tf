@@ -1,5 +1,5 @@
 variable "availability_zones" {
-  type        = list(any)
+  type        = list(string)
   description = "AZ in which all the resources will be deployed"
 }
 
@@ -9,17 +9,17 @@ variable "environment" {
 }
 
 variable "private_subnets_cidr" {
-  type        = list(any)
+  type        = list(string)
   description = "CIDR block for Private Subnet"
 }
 
 variable "public_subnets_cidr" {
-  type        = list(any)
+  type        = list(string)
   description = "CIDR block for Public Subnet"
 }
 
 
 variable "vpc_cidr" {
   type        = string
-  description = "CIDR block of the vpc"
+  description = "CIDR block for the vpc"
 }

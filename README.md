@@ -574,4 +574,3 @@ Remi Gruffat
 [antoine.sterna@cpe.fr](mailto:antoine.sterna@cpe.fr)
 </br>
 [remi.gruffat@cpe.fr](mailto:remi.gruffat@cpe.fr)
-
