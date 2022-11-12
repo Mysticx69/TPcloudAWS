@@ -8,6 +8,11 @@ output "private_subnets_id" {
   description = "Output all private subnets ids in a list"
 }
 
+output "private_subnets_cidr" {
+  value       = [aws_subnet.private_subnet.*.cidr_block]
+  description = "Output all CIDR block of private subnets in a list"
+}
+
 output "public_subnets_cidr" {
   value       = [aws_subnet.public_subnet.*.cidr_block]
   description = "Output all CIDR block of public subnets in a list"

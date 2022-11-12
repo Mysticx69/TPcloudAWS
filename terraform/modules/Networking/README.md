@@ -49,6 +49,7 @@ No modules.
 | Name | Description |
 |------|-------------|
 | <a name="output_default_sg_id"></a> [default\_sg\_id](#output\_default\_sg\_id) | Output the default security group id |
+| <a name="output_private_subnets_cidr"></a> [private\_subnets\_cidr](#output\_private\_subnets\_cidr) | Output all CIDR block of private subnets in a list |
 | <a name="output_private_subnets_id"></a> [private\_subnets\_id](#output\_private\_subnets\_id) | Output all private subnets ids in a list |
 | <a name="output_public_subnets_cidr"></a> [public\_subnets\_cidr](#output\_public\_subnets\_cidr) | Output all CIDR block of public subnets in a list |
 | <a name="output_public_subnets_id"></a> [public\_subnets\_id](#output\_public\_subnets\_id) | Output all public subnets ids in a list |
